@@ -163,11 +163,11 @@ export default function ProjectDetailPage() {
           <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">SYNC STATUS</h2>
           <div className="grid grid-cols-5 gap-4">
             {[
-              { key: 'purpose_sync', label: '目的同期' },
-              { key: 'granularity_sync', label: '粒度同期' },
-              { key: 'state_sync', label: '状態同期' },
-              { key: 'priority_sync', label: '優先度同期' },
-              { key: 'interpretation_sync', label: '解釈同期' },
+              { key: 'purpose', label: '目的同期' },
+              { key: 'granularity', label: '粒度同期' },
+              { key: 'state', label: '状態同期' },
+              { key: 'priority', label: '優先度同期' },
+              { key: 'interpretation', label: '解釈同期' },
             ].map(axis => {
               const val = syncStatus?.[axis.key] ?? 3
               return (
