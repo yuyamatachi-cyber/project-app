@@ -94,7 +94,12 @@ export default function ProjectDetailPage() {
   }
 
   async function saveSyncStatus() {
-    const commentData = {
+    const saveData = {
+      purpose: syncStatus?.purpose ?? 3,
+      granularity: syncStatus?.granularity ?? 3,
+      state: syncStatus?.state ?? 3,
+      priority: syncStatus?.priority ?? 3,
+      interpretation: syncStatus?.interpretation ?? 3,
       purpose_comment: syncComments['purpose'] || '',
       granularity_comment: syncComments['granularity'] || '',
       state_comment: syncComments['state'] || '',
@@ -102,24 +107,17 @@ export default function ProjectDetailPage() {
       interpretation_comment: syncComments['interpretation'] || '',
     }
     if (syncStatus?.id) {
-      await supabase.from('sync_statuses').update(commentData).eq('id', syncStatus.id)
+      await supabase.from('sync_statuses').update(saveData).eq('id', syncStatus.id)
     } else {
-      await supabase.from('sync_statuses').insert({ project_id: id, purpose: 3, granularity: 3, state: 3, priority: 3, interpretation: 3, ...commentData })
+      const { data } = await supabase.from('sync_statuses').insert({ project_id: id, ...saveData }).select().single()
+      if (data) setSyncStatus(data)
     }
     setSyncSaved(true)
     setTimeout(() => setSyncSaved(false), 2000)
-    const { data: syncData } = await supabase.from('sync_statuses').select('*').eq('project_id', id).limit(1).then(r => ({ data: r.data?.[0] || null }))
-    setSyncStatus(syncData)
   }
 
-  async function updateProjectSyncStatus(field: string, value: number) {
+  function updateProjectSyncStatus(field: string, value: number) {
     setSyncStatus((prev: any) => ({ ...(prev || {}), [field]: value }))
-    if (syncStatus?.id) {
-      await supabase.from('sync_statuses').update({ [field]: value }).eq('id', syncStatus.id)
-    } else {
-      const { data } = await supabase.from('sync_statuses').insert({ project_id: id, purpose: 3, granularity: 3, state: 3, priority: 3, interpretation: 3, [field]: value }).select().single()
-      if (data) setSyncStatus(data)
-    }
   }
 
   const issueCount = (t: Theme) =>
