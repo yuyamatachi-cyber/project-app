@@ -141,9 +141,9 @@ export default function PortfolioPage() {
 
   return (
     <div className="flex h-screen bg-slate-100 relative">
-      {sidebarOpen && <div onClick={() => setSidebarOpen(false)} className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40" />}
-      <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:relative z-50 w-56 h-full bg-[#1a1a1a] border-r border-[#333333] flex flex-col p-4 gap-2 transition-transform duration-200`}>
-        <button onClick={() => setSidebarOpen(false)} className="md:hidden absolute top-3 right-3 text-gray-400 hover:text-white">✕</button>
+      {sidebarOpen && <div onClick={() => setSidebarOpen(false)} className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40" />}
+      <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative z-50 w-56 h-full bg-[#1a1a1a] border-r border-[#333333] flex flex-col p-4 gap-2 transition-transform duration-200`}>
+        <button onClick={() => setSidebarOpen(false)} className="lg:hidden absolute top-3 right-3 text-gray-400 hover:text-white">✕</button>
         <div className="text-xs font-bold text-[#FFE600] uppercase tracking-widest mb-2">プロジェクト</div>
         <button onClick={() => setSelectedCategory(null)} className={`text-left px-3 py-2 rounded text-sm ${!selectedCategory ? 'bg-blue-600 text-white font-bold' : 'text-slate-600 hover:bg-slate-50'}`}>すべて</button>
         {categories.map(cat => (
@@ -165,8 +165,8 @@ export default function PortfolioPage() {
           </div>
         )}
       </aside>
-      <main className="flex-1 overflow-auto p-4 md:p-8 bg-slate-100">
-        <button onClick={() => setSidebarOpen(true)} className="md:hidden mb-4 p-2 bg-[#1a1a1a] text-[#FFE600] rounded-lg text-xs font-bold">☰ メニュー</button>
+      <main className="flex-1 overflow-auto p-4 lg:p-8 bg-slate-100">
+        <button onClick={() => setSidebarOpen(true)} className="mb-4 p-2 bg-[#1a1a1a] text-[#FFE600] rounded-lg text-xs font-bold lg:hidden">☰ メニュー</button>
         <div className="flex items-center justify-between mb-6"><h1 className="text-2xl font-bold text-slate-900">Project Portfolio</h1><button onClick={() => { navigator.clipboard.writeText(window.location.origin + "/share/portfolio"); alert("共有URLをコピーしました"); }} className="bg-white hover:bg-slate-50 text-slate-600 text-xs px-4 py-2 rounded-lg border border-slate-200">🔗 共有</button></div>
         <div className="flex items-center gap-4 mb-4">
           <div className="bg-white rounded-xl px-5 py-3 border border-slate-200 shadow-sm">

@@ -149,9 +149,9 @@ export default function ProjectDetailPage() {
 
   return (
     <div className="flex h-screen bg-slate-100 relative">
-      {sidebarOpen && <div onClick={() => setSidebarOpen(false)} className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40" />}
-      <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:relative z-50 w-56 h-full bg-[#1a1a1a] border-r border-[#333333] flex flex-col p-4 gap-2 transition-transform duration-200`}>
-        <button onClick={() => setSidebarOpen(false)} className="md:hidden absolute top-3 right-3 text-gray-400 hover:text-white">✕</button>
+      {sidebarOpen && <div onClick={() => setSidebarOpen(false)} className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40" />}
+      <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative z-50 w-56 h-full bg-[#1a1a1a] border-r border-[#333333] flex flex-col p-4 gap-2 transition-transform duration-200`}>
+        <button onClick={() => setSidebarOpen(false)} className="lg:hidden absolute top-3 right-3 text-gray-400 hover:text-white">✕</button>
         <div className="text-xs font-bold text-[#FFE600] uppercase tracking-widest mb-2">プロジェクト</div>
         <a href="/portfolio" className="text-gray-300 hover:bg-[#333333] px-3 py-2 rounded text-sm">← Portfolio</a>
         {themes.length > 0 && (
@@ -163,8 +163,8 @@ export default function ProjectDetailPage() {
           </div>
         )}
       </aside>
-      <main className="flex-1 overflow-auto p-4 md:p-8 bg-slate-100">
-        <button onClick={() => setSidebarOpen(true)} className="md:hidden mb-4 p-2 bg-[#1a1a1a] text-[#FFE600] rounded-lg text-xs font-bold">☰ メニュー</button>
+      <main className="flex-1 overflow-auto p-4 lg:p-8 bg-slate-100">
+        <button onClick={() => setSidebarOpen(true)} className="mb-4 p-2 bg-[#1a1a1a] text-[#FFE600] rounded-lg text-xs font-bold lg:hidden">☰ メニュー</button>
         <div className="flex items-center justify-between mb-6">
           <div>
             <div className="text-xs text-slate-500 mb-1">{project.category?.name || '—'}</div>
