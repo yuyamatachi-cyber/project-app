@@ -27,11 +27,17 @@ export default function PortfolioPage() {
     ])
     setCategories(cats || [])
     setProjects(projs || [])
-    if (projs && projs.length > 0) {
-      const { data: syncs } = await supabase.from('sync_statuses').select('*').in('project_id', projs.map((p: any) => p.id))
+    // sync_statusesを取得してmapに変換
+    const projectIds = (projs || []).map((p: any) => p.id)
+    if (projectIds.length > 0) {
+      const { data: syncs } = await supabase.from('sync_statuses').select('*').in('project_id', projectIds)
       const syncMap: Record<string, any> = {}
-      for (const s of syncs || []) { if (s.project_id) syncMap[s.project_id] = s }
+      for (const s of (syncs || [])) { 
+        if (s.project_id) syncMap[s.project_id] = s 
+      }
       setSyncStatuses(syncMap)
+    } else {
+      setSyncStatuses({})
     }
     setLoading(false)
   }
@@ -171,7 +177,7 @@ export default function PortfolioPage() {
               pj: projects.filter(p => p.health === 'red').length,
               issues: projects.filter(p => p.health === 'red').reduce((sum, p) => sum + (openIssues(p) as number), 0),
               sync: (() => { const ps = projects.filter(p => p.health === 'red'); return ps.length === 0 ? null : Math.round(ps.reduce((s, p) => s + (syncAvg(p) ?? 3), 0) / ps.length * 10) / 10 })(),
-              border: 'border-red-800', bg: 'bg-[#2a1a1a]', labelColor: 'text-red-400'
+              border: 'border-red-200', bg: 'bg-red-50', labelColor: 'text-red-600'
             },
             {
               label: '注意',
@@ -179,7 +185,7 @@ export default function PortfolioPage() {
               pj: projects.filter(p => p.health === 'yellow').length,
               issues: projects.filter(p => p.health === 'yellow').reduce((sum, p) => sum + (openIssues(p) as number), 0),
               sync: (() => { const ps = projects.filter(p => p.health === 'yellow'); return ps.length === 0 ? null : Math.round(ps.reduce((s, p) => s + (syncAvg(p) ?? 3), 0) / ps.length * 10) / 10 })(),
-              border: 'border-yellow-700', bg: 'bg-[#2a2a1a]', labelColor: 'text-yellow-400'
+              border: 'border-yellow-200', bg: 'bg-yellow-50', labelColor: 'text-yellow-600'
             },
             {
               label: '良好',
@@ -187,7 +193,7 @@ export default function PortfolioPage() {
               pj: projects.filter(p => p.health === 'green').length,
               issues: projects.filter(p => p.health === 'green').reduce((sum, p) => sum + (openIssues(p) as number), 0),
               sync: (() => { const ps = projects.filter(p => p.health === 'green'); return ps.length === 0 ? null : Math.round(ps.reduce((s, p) => s + (syncAvg(p) ?? 3), 0) / ps.length * 10) / 10 })(),
-              border: 'border-green-800', bg: 'bg-[#1a2a1a]', labelColor: 'text-green-400'
+              border: 'border-green-200', bg: 'bg-green-50', labelColor: 'text-green-600'
             },
           ].map(k => (
             <div key={k.label} className={`${k.bg} rounded-xl p-5 border ${k.border}`}>
