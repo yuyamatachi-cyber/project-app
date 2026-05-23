@@ -243,8 +243,8 @@ export default function ThemeDetailPage() {
 
   return (
     <div className="flex h-screen bg-slate-100">
-      <aside className="w-56 bg-white border-r border-slate-200 flex flex-col p-4 gap-2">
-        <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">プロジェクト</div>
+      <aside className="w-56 bg-[#1a1a1a] border-r border-[#333333] flex flex-col p-4 gap-2">
+        <div className="text-xs font-bold text-[#FFE600] uppercase tracking-widest mb-2">プロジェクト</div>
         <a href="/portfolio" className="text-slate-600 hover:bg-slate-50 px-3 py-2 rounded text-sm">← Portfolio</a>
         {theme.project && (
           <a href={`/projects/${theme.project.id}`} className="text-slate-600 hover:bg-slate-50 px-3 py-2 rounded text-sm">← {theme.project.name}</a>
