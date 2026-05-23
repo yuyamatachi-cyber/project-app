@@ -133,6 +133,39 @@ export default function ThemeDetailPage() {
     fetchAll()
   }
 
+  async function deleteMember(memberId: string) {
+    if (!confirm('このメンバーを削除しますか？')) return
+    await supabase.from('members').delete().eq('id', memberId)
+    fetchAll()
+  }
+
+  async function updateMember(memberId: string, name: string, initial: string) {
+    await supabase.from('members').update({ name, initial }).eq('id', memberId)
+    fetchAll()
+  }
+
+  async function deleteTask2(taskId: string) {
+    await supabase.from('tasks').delete().eq('id', taskId)
+    fetchAll()
+  }
+
+  async function updateTaskName(taskId: string, name: string) {
+    await supabase.from('tasks').update({ name }).eq('id', taskId)
+    fetchAll()
+  }
+
+  async function deleteBlocker(blockerId: string) {
+    if (!confirm('このBlockerを削除しますか？')) return
+    await supabase.from('blockers').delete().eq('id', blockerId)
+    fetchAll()
+  }
+
+  async function deleteDecision(decisionId: string) {
+    if (!confirm('このDecisionを削除しますか？')) return
+    await supabase.from('decision_logs').delete().eq('id', decisionId)
+    fetchAll()
+  }
+
   function shareUrl() {
     navigator.clipboard.writeText(window.location.origin + '/share/theme/' + id)
     alert('共有URLをコピーしました')
@@ -189,10 +222,22 @@ export default function ThemeDetailPage() {
                 <button onClick={() => setAddingMember(!addingMember)} className="text-xs text-blue-500 hover:text-blue-700">＋ メンバー追加</button>
               </div>
               {addingMember && (
-                <div className="flex gap-2 mb-3">
-                  <input value={newMemberName} onChange={e => setNewMemberName(e.target.value)} placeholder="名前" className="bg-slate-100 text-slate-900 text-xs px-2 py-1 rounded flex-1" />
-                  <input value={newMemberInitial} onChange={e => setNewMemberInitial(e.target.value)} placeholder="略称" className="bg-slate-100 text-slate-900 text-xs px-2 py-1 rounded w-16" />
-                  <button onClick={addMember} className="bg-blue-600 text-white text-xs px-3 py-1 rounded">追加</button>
+                <div className="flex flex-col gap-2 mb-3">
+                  <div className="flex gap-2">
+                    <input value={newMemberName} onChange={e => setNewMemberName(e.target.value)} placeholder="名前" className="bg-slate-100 text-slate-900 text-xs px-2 py-1 rounded flex-1" />
+                    <input value={newMemberInitial} onChange={e => setNewMemberInitial(e.target.value)} placeholder="略称" className="bg-slate-100 text-slate-900 text-xs px-2 py-1 rounded w-16" />
+                    <button onClick={addMember} className="bg-blue-600 text-white text-xs px-3 py-1 rounded">追加</button>
+                  </div>
+                  <div className="border-t border-slate-200 pt-2">
+                    <div className="text-xs text-slate-400 mb-1">メンバー管理</div>
+                    {members.map(m => (
+                      <div key={m.id} className="flex gap-2 items-center mb-1">
+                        <span className="text-xs text-slate-600 flex-1">{m.name}（{m.initial}）</span>
+                        <button onClick={() => { const name = prompt('名前', m.name); const initial = prompt('略称', m.initial); if (name && initial) updateMember(m.id, name, initial) }} className="text-xs text-blue-500 hover:text-blue-700">編集</button>
+                        <button onClick={() => deleteMember(m.id)} className="text-xs text-red-400 hover:text-red-600">削除</button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
               <div className="grid grid-cols-2 gap-3">
@@ -292,7 +337,8 @@ export default function ThemeDetailPage() {
                                 → {s === 'backlog' ? 'Backlog' : s === 'in_progress' ? 'In Progress' : 'Done'}
                               </button>
                             ))}
-                            <button onClick={() => deleteTask(t.id)} className="text-xs text-red-400 hover:text-red-600 ml-auto">✕</button>
+                            <button onClick={() => { const name = prompt('タスク名を変更', t.name); if (name) updateTaskName(t.id, name) }} className="text-xs text-slate-500 hover:text-slate-700 ml-auto">編集</button>
+                            <button onClick={() => deleteTask(t.id)} className="text-xs text-red-400 hover:text-red-600">✕</button>
                           </div>
                         </div>
                       ))}
@@ -338,6 +384,7 @@ export default function ThemeDetailPage() {
                           </select>
                           <input placeholder="判断内容" onBlur={e => updateBlocker(b.id, { resolved_comment: e.target.value })} className="bg-white border border-slate-200 text-xs px-1 py-0.5 rounded text-slate-600" />
                           <button onClick={() => updateBlocker(b.id, { status: 'resolved', resolved_at: new Date().toISOString() })} className="text-xs text-green-600 hover:text-green-800 text-left">✓ 解消済みにする</button>
+                          <button onClick={() => deleteBlocker(b.id)} className="text-xs text-red-400 hover:text-red-600 text-left">✕ 削除</button>
                         </div>
                       </div>
                     ))}
@@ -372,6 +419,7 @@ export default function ThemeDetailPage() {
                             {members.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                           </select>
                           <button onClick={() => updateDecision(d.id, { status: 'resolved' })} className="text-xs text-green-600 hover:text-green-800 text-left">✓ 解消済みにする</button>
+                          <button onClick={() => deleteDecision(d.id)} className="text-xs text-red-400 hover:text-red-600 text-left">✕ 削除</button>
                         </div>
                       </div>
                     ))}

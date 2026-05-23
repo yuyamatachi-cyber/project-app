@@ -42,6 +42,17 @@ export default function ProjectDetailPage() {
     fetchAll()
   }
 
+  async function deleteTheme(themeId: string) {
+    if (!confirm('このThemeを削除しますか？')) return
+    await supabase.from('themes').delete().eq('id', themeId)
+    fetchAll()
+  }
+
+  async function updateThemeName(themeId: string, name: string) {
+    await supabase.from('themes').update({ name }).eq('id', themeId)
+    fetchAll()
+  }
+
   async function addTheme() {
     if (!newThemeName.trim()) return
     await supabase.from('themes').insert({ project_id: id, name: newThemeName })
@@ -147,6 +158,7 @@ export default function ProjectDetailPage() {
                 <th className="text-center px-4 py-3">ステータス</th>
                 <th className="text-center px-4 py-3">進捗率</th>
                 <th className="text-center px-4 py-3">Issues</th>
+                <th className="text-center px-4 py-3">操作</th>
               </tr>
             </thead>
             <tbody>
@@ -165,6 +177,12 @@ export default function ProjectDetailPage() {
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${issueCount(t) > 0 ? 'bg-red-900 text-red-300' : 'bg-slate-100 text-slate-500'}`}>
                       {issueCount(t) > 0 ? `${issueCount(t)}件` : '—'}
                     </span>
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <div className="flex gap-2 justify-center">
+                      <button onClick={() => { const name = prompt('Theme名を変更', t.name); if (name) updateThemeName(t.id, name) }} className="text-xs text-blue-500 hover:text-blue-700">編集</button>
+                      <button onClick={() => deleteTheme(t.id)} className="text-xs text-red-400 hover:text-red-600">削除</button>
+                    </div>
                   </td>
                 </tr>
               ))}
