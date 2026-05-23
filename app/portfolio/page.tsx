@@ -104,11 +104,10 @@ export default function PortfolioPage() {
   const statusColor = (s: string) =>
     s === 'done' ? 'bg-green-500 text-white' : s === 'in_progress' ? 'bg-blue-500 text-white' : 'bg-[#333333] text-gray-400'
 
-  const syncAvg = (p: any) => {
+  const syncAvg = (p: any): number | null => {
     const s = p.sync_statuses?.[0]
-    if (!s) return '—'
-    const avg = Math.round(((s.purpose || 3) + (s.granularity || 3) + (s.state || 3) + (s.priority || 3) + (s.interpretation || 3)) / 5 * 10) / 10
-    return avg
+    if (!s) return null
+    return Math.round(((s.purpose || 3) + (s.granularity || 3) + (s.state || 3) + (s.priority || 3) + (s.interpretation || 3)) / 5 * 10) / 10
   }
 
   const openIssues = (p: Project) =>
@@ -194,8 +193,8 @@ export default function PortfolioPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`text-sm font-bold ${typeof syncAvg(p) === 'number' && syncAvg(p) >= 4 ? 'text-green-400' : typeof syncAvg(p) === 'number' && syncAvg(p) <= 2 ? 'text-red-400' : 'text-[#FFE600]'}`}>
-                      {syncAvg(p)}{typeof syncAvg(p) === 'number' ? '/5' : ''}
+                    <span className={`text-sm font-bold ${syncAvg(p) === null ? 'text-gray-500' : (syncAvg(p) as number) >= 4 ? 'text-green-400' : (syncAvg(p) as number) <= 2 ? 'text-red-400' : 'text-[#FFE600]'}`}>
+                      {syncAvg(p) === null ? '—' : `${syncAvg(p)}/5`}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center">
