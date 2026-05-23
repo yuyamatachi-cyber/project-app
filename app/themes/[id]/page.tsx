@@ -21,6 +21,10 @@ export default function ThemeDetailPage() {
   const [addingBlocker, setAddingBlocker] = useState(false)
   const [addingDecision, setAddingDecision] = useState(false)
   const [blockerInputs, setBlockerInputs] = useState<Record<string, { resolved_by: string, resolved_comment: string }>>({})
+  const [editingBlocker, setEditingBlocker] = useState<string | null>(null)
+  const [editingBlockerContent, setEditingBlockerContent] = useState('')
+  const [editingDecision, setEditingDecision] = useState<string | null>(null)
+  const [editingDecisionContent, setEditingDecisionContent] = useState('')
   const [progressForm, setProgressForm] = useState({ status: 'in_progress', progress_rate: 0, comment: '' })
   const [showProgressForm, setShowProgressForm] = useState(false)
   const [newMemberName, setNewMemberName] = useState('')
@@ -145,9 +149,43 @@ export default function ThemeDetailPage() {
     fetchAll()
   }
 
+  async function saveBlockerContent(blockerId: string) {
+    await supabase.from('blockers').update({ content: editingBlockerContent }).eq('id', blockerId)
+    setEditingBlocker(null)
+    fetchAll()
+  }
+
+  async function resolveBlocker(blockerId: string) {
+    const input = blockerInputs[blockerId] || {}
+    await supabase.from('blockers').update({
+      status: 'resolved',
+      resolved_at: new Date().toISOString(),
+      resolved_by: input.resolved_by || null,
+      resolved_comment: input.resolved_comment || ''
+    }).eq('id', blockerId)
+    // Decision Logに自動記録
+    const blocker = (theme.blockers || []).find((b: any) => b.id === blockerId)
+    if (blocker) {
+      await supabase.from('decision_logs').insert({
+        theme_id: id,
+        blocker_id: blockerId,
+        content: input.resolved_comment || `Blocker解消: ${blocker.content}`,
+        decided_by: input.resolved_by || null,
+        status: 'resolved'
+      })
+    }
+    fetchAll()
+  }
+
   async function deleteBlocker(blockerId: string) {
     if (!confirm('このBlockerを削除しますか？')) return
     await supabase.from('blockers').delete().eq('id', blockerId)
+    fetchAll()
+  }
+
+  async function saveDecisionContent(decisionId: string) {
+    await supabase.from('decision_logs').update({ content: editingDecisionContent }).eq('id', decisionId)
+    setEditingDecision(null)
     fetchAll()
   }
 
