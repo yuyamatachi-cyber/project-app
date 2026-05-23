@@ -114,7 +114,7 @@ export default function PortfolioPage() {
     s === 'not_started' ? '未着手' : s === 'in_progress' ? '進行中' : '完了'
 
   const statusColor = (s: string) =>
-    s === 'done' ? 'bg-green-500 text-slate-900' : s === 'in_progress' ? 'bg-blue-500 text-slate-900' : 'bg-[#333333] text-slate-500'
+    s === 'done' ? 'bg-green-100 text-green-700 border border-green-300' : s === 'in_progress' ? 'bg-blue-100 text-blue-700 border border-blue-300' : 'bg-slate-100 text-slate-500 border border-slate-300'
 
   const [syncStatuses, setSyncStatuses] = useState<Record<string, any>>({})
 

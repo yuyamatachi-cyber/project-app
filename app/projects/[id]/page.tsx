@@ -8,7 +8,7 @@ const statusLabel = (s: string) =>
   s === 'not_started' ? '未着手' : s === 'in_progress' ? '進行中' : '完了'
 
 const statusColor = (s: string) =>
-  s === 'done' ? 'bg-green-900 text-green-300' : s === 'in_progress' ? 'bg-blue-900 text-blue-300' : 'bg-slate-100 text-slate-500'
+  s === 'done' ? 'bg-green-100 text-green-700 border border-green-300' : s === 'in_progress' ? 'bg-blue-100 text-blue-700 border border-blue-300' : 'bg-slate-100 text-slate-500 border border-slate-300'
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>()

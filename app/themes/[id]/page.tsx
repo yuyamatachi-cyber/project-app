@@ -427,7 +427,7 @@ export default function ThemeDetailPage() {
                     {(theme.blockers || []).filter((b: any) => b.status === 'open').map((b: any) => (
                       <div key={b.id} className="rounded-lg p-3 border bg-red-50 border-red-200">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-bold text-red-400">unresolved</span>
+                          <span className="text-xs font-bold text-red-600">unresolved</span>
                           <div className="flex gap-2">
                             <button onClick={() => { setEditingBlocker(editingBlocker === b.id ? null : b.id); setEditingBlockerContent(b.content); setBlockerInputs(prev => ({ ...prev, [b.id]: { measure: b.resolved_comment || '' } })) }} className="text-xs text-blue-600 hover:text-blue-700">編集</button>
                             <button onClick={() => deleteBlocker(b.id)} className="text-xs text-red-400 hover:text-red-300">削除</button>
@@ -487,7 +487,7 @@ export default function ThemeDetailPage() {
                     {(theme.decision_logs || []).map((d: any) => (
                       <div key={d.id} className="bg-yellow-50 rounded-lg p-3 border border-yellow-200">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-bold text-yellow-400">decision</span>
+                          <span className="text-xs font-bold text-yellow-600">decision</span>
                           <div className="flex gap-2">
                             <button onClick={() => { setEditingDecision(editingDecision === d.id ? null : d.id); setEditingDecisionContent(d.content) }} className="text-xs text-blue-600 hover:text-blue-700">編集</button>
                             <button onClick={() => deleteDecision(d.id)} className="text-xs text-red-400 hover:text-red-300">削除</button>
