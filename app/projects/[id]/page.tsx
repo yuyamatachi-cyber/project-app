@@ -34,7 +34,7 @@ export default function ProjectDetailPage() {
     setProject(proj)
     setThemes(thms || [])
     setCategories(cats || [])
-    const { data: syncData } = await supabase.from('sync_statuses').select('*').eq('project_id', id).maybeSingle()
+    const { data: syncData } = await supabase.from('sync_statuses').select('*').eq('project_id', id).limit(1).then(r => ({ data: r.data?.[0] || null }))
     setSyncStatus(syncData)
     setLoading(false)
   }
