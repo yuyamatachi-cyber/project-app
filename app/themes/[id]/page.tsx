@@ -14,6 +14,7 @@ export default function ThemeDetailPage() {
   const [theme, setTheme] = useState<any>(null)
   const [members, setMembers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [newTaskName, setNewTaskName] = useState('')
   const [newBlockerContent, setNewBlockerContent] = useState('')
   const [newDecisionContent, setNewDecisionContent] = useState('')
@@ -242,15 +243,18 @@ export default function ThemeDetailPage() {
   const roles = ['owner', 'pm', 'executor', 'decision_maker']
 
   return (
-    <div className="flex h-screen bg-slate-100">
-      <aside className="w-56 bg-[#1a1a1a] border-r border-[#333333] flex flex-col p-4 gap-2">
+    <div className="flex h-screen bg-slate-100 relative">
+      {sidebarOpen && <div onClick={() => setSidebarOpen(false)} className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40" />}
+      <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:relative z-50 w-56 h-full bg-[#1a1a1a] border-r border-[#333333] flex flex-col p-4 gap-2 transition-transform duration-200`}>
+        <button onClick={() => setSidebarOpen(false)} className="md:hidden absolute top-3 right-3 text-gray-400 hover:text-white">✕</button>
         <div className="text-xs font-bold text-[#FFE600] uppercase tracking-widest mb-2">プロジェクト</div>
         <a href="/portfolio" className="text-slate-600 hover:bg-slate-50 px-3 py-2 rounded text-sm">← Portfolio</a>
         {theme.project && (
           <a href={`/projects/${theme.project.id}`} className="text-slate-600 hover:bg-slate-50 px-3 py-2 rounded text-sm">← {theme.project.name}</a>
         )}
       </aside>
-      <main className="flex-1 overflow-auto p-8 bg-slate-100">
+      <main className="flex-1 overflow-auto p-4 md:p-8 bg-slate-100">
+        <button onClick={() => setSidebarOpen(true)} className="md:hidden mb-4 p-2 bg-[#1a1a1a] text-[#FFE600] rounded-lg text-xs font-bold">☰ メニュー</button>
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-slate-900">{theme.name}</h1>
