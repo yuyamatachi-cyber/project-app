@@ -290,14 +290,14 @@ export default function ThemeDetailPage() {
                 </div>
               )}
               <div className="grid grid-cols-2 gap-4">
-                {[latestLog, prevLog].map((log, i) => log ? (
+                {[prevLog, latestLog].map((log, i) => log ? (
                   <div key={log.id} className="bg-slate-50 rounded-lg p-3 border border-slate-200">
-                    <div className="text-xs text-slate-400 mb-1">{i === 0 ? '最新' : '前回'} · {new Date(log.created_at).toLocaleDateString('ja-JP')}</div>
+                    <div className="text-xs text-slate-400 mb-1">{i === 0 ? '前回' : '最新'} · {new Date(log.created_at).toLocaleDateString('ja-JP')}</div>
                     <div className="text-sm font-medium text-slate-700 mb-1">{statusLabel(log.status)} · {log.progress_rate}%</div>
                     {log.comment && <div className="text-xs text-slate-500">{log.comment}</div>}
                   </div>
                 ) : (
-                  <div key={i} className="bg-slate-50 rounded-lg p-3 border border-slate-200 text-xs text-slate-400">{i === 0 ? '最新' : '前回'}の記録なし</div>
+                  <div key={i} className="bg-slate-50 rounded-lg p-3 border border-slate-200 text-xs text-slate-400">{i === 0 ? '前回' : '最新'}の記録なし</div>
                 ))}
               </div>
             </div>
