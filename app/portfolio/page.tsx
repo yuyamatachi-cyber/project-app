@@ -243,8 +243,8 @@ export default function PortfolioPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${openIssues(p) > 0 ? 'bg-red-900 text-red-300' : 'bg-[#333333] text-slate-500'}`}>
-                      {openIssues(p) > 0 ? `Issues ${openIssues(p)}件` : '—'}
+                    <span className={`px-3 py-1.5 rounded-full text-xs font-bold ${openIssues(p) > 0 ? 'bg-red-500 text-white' : 'text-slate-300'}`}>
+                      {openIssues(p) > 0 ? `${openIssues(p)}件` : '—'}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center">
