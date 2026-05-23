@@ -80,7 +80,7 @@ export default function ProjectDetailPage() {
   }
 
   async function updateProjectSyncStatus(field: string, value: number) {
-    const existing = project?.sync_statuses?.[0]
+    const existing = (project as any)?.sync_statuses?.[0]
     if (existing) {
       await supabase.from('sync_statuses').update({ [field]: value }).eq('id', existing.id)
     } else {
