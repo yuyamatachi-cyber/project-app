@@ -185,6 +185,24 @@ export default function PortfolioPage() {
                       {openIssues(p) > 0 ? `open ${openIssues(p)}件` : 'clear'}
                     </span>
                   </td>
+                  <td className="px-4 py-3 text-center">
+                    {editingProject === p.id ? (
+                      <div className="flex gap-1 justify-center flex-wrap">
+                        <input value={editProjectName} onChange={e => setEditProjectName(e.target.value)} className="bg-slate-100 text-slate-900 text-xs px-2 py-1 rounded w-24" />
+                        <select value={editProjectCategory} onChange={e => setEditProjectCategory(e.target.value)} className="bg-slate-100 text-slate-900 text-xs px-1 py-1 rounded">
+                          <option value="">未選択</option>
+                          {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                        </select>
+                        <button onClick={() => updateProject(p.id)} className="text-xs text-blue-600 hover:text-blue-800">保存</button>
+                        <button onClick={() => setEditingProject(null)} className="text-xs text-slate-400">✕</button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2 justify-center">
+                        <button onClick={() => { setEditingProject(p.id); setEditProjectName(p.name); setEditProjectCategory(p.category_id || '') }} className="text-xs text-blue-500 hover:text-blue-700">編集</button>
+                        <button onClick={() => deleteProject(p.id)} className="text-xs text-red-400 hover:text-red-600">削除</button>
+                      </div>
+                    )}
+                  </td>
                 </tr>
               ))}
               {addingProject ? (
