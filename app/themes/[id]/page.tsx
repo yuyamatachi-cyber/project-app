@@ -151,7 +151,12 @@ export default function ThemeDetailPage() {
   }
 
   async function saveBlockerContent(blockerId: string) {
-    await supabase.from('blockers').update({ content: editingBlockerContent }).eq('id', blockerId)
+    const input = blockerInputs[blockerId] || {}
+    await supabase.from('blockers').update({
+      content: editingBlockerContent,
+      resolved_comment: input.measure || '',
+      resolved_by: input.resolved_by || null
+    }).eq('id', blockerId)
     setEditingBlocker(null)
     fetchAll()
   }
