@@ -436,23 +436,37 @@ export default function ThemeDetailPage() {
                         </div>
                         {editingBlocker === b.id ? (
                           <div className="flex flex-col gap-2">
-                            <input value={editingBlockerContent} onChange={e => setEditingBlockerContent(e.target.value)} placeholder="ブロッカー内容" className="bg-white text-slate-900 text-xs px-2 py-1 rounded" />
+                            <input value={editingBlockerContent} onChange={e => setEditingBlockerContent(e.target.value)} placeholder="ブロッカー内容" className="bg-white text-slate-900 text-xs px-2 py-1 rounded border border-slate-300" />
                             <input
                               value={blockerInputs[b.id]?.measure || ''}
-                              onChange={e => setBlockerInputs(prev => ({ ...prev, [b.id]: { measure: e.target.value } }))}
+                              onChange={e => setBlockerInputs(prev => ({ ...prev, [b.id]: { ...(prev[b.id] || {}), measure: e.target.value } }))}
                               placeholder="施策内容"
-                              className="bg-white text-slate-900 text-xs px-2 py-1 rounded"
+                              className="bg-white text-slate-900 text-xs px-2 py-1 rounded border border-slate-300"
                             />
+                            <select
+                              value={blockerInputs[b.id]?.resolved_by || b.resolved_by || ''}
+                              onChange={e => setBlockerInputs(prev => ({ ...prev, [b.id]: { ...(prev[b.id] || {}), resolved_by: e.target.value } }))}
+                              className="bg-white text-slate-900 text-xs px-2 py-1 rounded border border-slate-300"
+                            >
+                              <option value="">判断者を選択（必須）</option>
+                              {members.map((m: any) => <option key={m.id} value={m.id}>{m.name}</option>)}
+                            </select>
                             <div className="flex gap-2">
                               <button onClick={() => saveBlockerContent(b.id)} className="text-xs bg-blue-600 text-white px-3 py-1 rounded font-medium flex-1">保存</button>
-                              <button onClick={() => resolveBlocker(b.id, blockerInputs[b.id]?.measure)} className="text-xs bg-green-600 text-slate-900 px-2 py-1 rounded font-medium">解決済にする → Decision Logへ</button>
+                              <button onClick={() => resolveBlocker(b.id, blockerInputs[b.id]?.measure, blockerInputs[b.id]?.resolved_by)} className="text-xs bg-green-600 text-white px-2 py-1 rounded font-medium">解決済にする → Decision Logへ</button>
                               <button onClick={() => setEditingBlocker(null)} className="text-xs text-slate-500 px-1">✕</button>
                             </div>
                           </div>
                         ) : (
-                          <div>
+                          <div className="flex flex-col gap-1">
+                            <div className="text-xs text-slate-400 font-medium">ブロッカー内容</div>
                             <div className="text-sm text-slate-700">{b.content}</div>
-                            {b.resolved_comment && <div className="text-xs text-slate-500 mt-1">施策: {b.resolved_comment}</div>}
+                            <div className="text-xs text-slate-400 font-medium mt-1">施策内容</div>
+                            <div className="text-sm text-slate-600">{b.resolved_comment || <span className="text-slate-300 italic">未入力</span>}</div>
+                            <div className="text-xs text-slate-400 font-medium mt-1">判断者</div>
+                            <div className={`text-sm ${b.resolved_by ? 'text-slate-600' : 'text-red-500 font-medium'}`}>
+                              {b.resolved_by ? members.find((m: any) => m.id === b.resolved_by)?.name || '—' : '未設定'}
+                            </div>
                           </div>
                         )}
                       </div>
