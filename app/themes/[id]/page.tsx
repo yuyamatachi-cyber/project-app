@@ -156,20 +156,24 @@ export default function ThemeDetailPage() {
     fetchAll()
   }
 
-  async function resolveBlocker(blockerId: string) {
-    const input = blockerInputs[blockerId] || {}
-    const blocker = (theme.blockers || []).find((b: any) => b.id === blockerId)
-    if (!blocker) return
-    // Decision Logに移動（insert）
+  async function resolveBlocker(blockerId: string, resolvedBy?: string, resolvedComment?: string) {
+    const blocker = (theme?.blockers || []).find((b: any) => b.id === blockerId)
+    // Blockerをresolvedに更新
+    await supabase.from('blockers').update({
+      status: 'resolved',
+      resolved_at: new Date().toISOString(),
+      resolved_by: resolvedBy || null,
+      resolved_comment: resolvedComment || ''
+    }).eq('id', blockerId)
+    // Decision Logに自動記録
     await supabase.from('decision_logs').insert({
       theme_id: id,
       blocker_id: blockerId,
-      content: blocker.content,
-      decided_by: input.resolved_by || null,
-      status: 'open'
+      content: resolvedComment || (blocker ? `Blocker解消: ${blocker.content}` : 'Blocker解消'),
+      decided_by: resolvedBy || null,
+      status: 'resolved'
     })
-    // Blockerを削除
-    await supabase.from('blockers').delete().eq('id', blockerId)
+    setBlockerInputs(prev => { const n = {...prev}; delete n[blockerId]; return n })
     fetchAll()
   }
 
@@ -516,7 +520,7 @@ export default function ThemeDetailPage() {
                         {/* Blockerに戻すボタン */}
                         <div className="border-t border-yellow-900 pt-2 mt-1">
                           <button
-                            onClick={() => returnBlockerFromDecision(d.id, d.blocker_id)}
+                            onClick={() => moveToBlocker(d.id)}
                             className="text-xs text-orange-400 hover:text-orange-300"
                           >↩ Blockerに戻す</button>
                         </div>
