@@ -157,16 +157,40 @@ export default function PortfolioPage() {
       </aside>
       <main className="flex-1 overflow-auto p-8">
         <div className="flex items-center justify-between mb-6"><h1 className="text-2xl font-bold text-white">Project Portfolio</h1><button onClick={() => { navigator.clipboard.writeText(window.location.origin + "/share/portfolio"); alert("共有URLをコピーしました"); }} className="bg-[#333333] hover:bg-[#3a3a3a] text-gray-300 text-xs px-4 py-2 rounded-lg border border-[#3a3a3a]">🔗 共有</button></div>
-        <div className="grid grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-3 gap-4 mb-8">
           {[
-            { label: '進行中PJ', value: inProgress },
-            { label: '要注意：Health 🔴', value: atRisk },
-            { label: '意思決定待ち', value: pendingDecision },
-            { label: '平均進捗率', value: `${avgProgress}%` },
+            {
+              label: '要注意',
+              emoji: '🔴',
+              pj: projects.filter(p => p.health === 'red').length,
+              issues: projects.filter(p => p.health === 'red').reduce((sum, p) => sum + (openIssues(p) as number), 0),
+              sync: (() => { const ps = projects.filter(p => p.health === 'red'); return ps.length === 0 ? null : Math.round(ps.reduce((s, p) => s + (syncAvg(p) ?? 3), 0) / ps.length * 10) / 10 })(),
+              border: 'border-red-800', bg: 'bg-[#2a1a1a]', labelColor: 'text-red-400'
+            },
+            {
+              label: '注意',
+              emoji: '🟡',
+              pj: projects.filter(p => p.health === 'yellow').length,
+              issues: projects.filter(p => p.health === 'yellow').reduce((sum, p) => sum + (openIssues(p) as number), 0),
+              sync: (() => { const ps = projects.filter(p => p.health === 'yellow'); return ps.length === 0 ? null : Math.round(ps.reduce((s, p) => s + (syncAvg(p) ?? 3), 0) / ps.length * 10) / 10 })(),
+              border: 'border-yellow-700', bg: 'bg-[#2a2a1a]', labelColor: 'text-yellow-400'
+            },
+            {
+              label: '良好',
+              emoji: '🟢',
+              pj: projects.filter(p => p.health === 'green').length,
+              issues: projects.filter(p => p.health === 'green').reduce((sum, p) => sum + (openIssues(p) as number), 0),
+              sync: (() => { const ps = projects.filter(p => p.health === 'green'); return ps.length === 0 ? null : Math.round(ps.reduce((s, p) => s + (syncAvg(p) ?? 3), 0) / ps.length * 10) / 10 })(),
+              border: 'border-green-800', bg: 'bg-[#1a2a1a]', labelColor: 'text-green-400'
+            },
           ].map(k => (
-            <div key={k.label} className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
-              <div className="text-xs text-gray-400 mb-1">{k.label}</div>
-              <div className="text-3xl font-bold text-white">{k.value}</div>
+            <div key={k.label} className={`${k.bg} rounded-xl p-5 border ${k.border}`}>
+              <div className={`text-sm font-bold ${k.labelColor} mb-3`}>{k.emoji} {k.label}</div>
+              <div className="flex flex-col gap-1">
+                <div className="text-xs text-gray-400">Health {k.emoji} <span className="text-white font-bold">{k.pj === 0 ? '—' : `${k.pj}PJ`}</span></div>
+                <div className="text-xs text-gray-400">意思決定待ち <span className="text-white font-bold">{k.issues === 0 ? '—' : `${k.issues}件`}</span></div>
+                <div className="text-xs text-gray-400">SYNC平均 <span className="text-white font-bold">{k.sync === null ? '—' : `${k.sync}/5`}</span></div>
+              </div>
             </div>
           ))}
         </div>
@@ -207,7 +231,7 @@ export default function PortfolioPage() {
                   </td>
                   <td className="px-4 py-3 text-center">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${openIssues(p) > 0 ? 'bg-red-900 text-red-300' : 'bg-[#333333] text-gray-400'}`}>
-                      {openIssues(p) > 0 ? `open ${openIssues(p)}件` : 'clear'}
+                      {openIssues(p) > 0 ? `Blockers ${openIssues(p)}件` : '—'}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center">
