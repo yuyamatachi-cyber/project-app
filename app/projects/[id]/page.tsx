@@ -83,12 +83,13 @@ export default function ProjectDetailPage() {
   }
 
   async function updateProjectSyncStatus(field: string, value: number) {
-    if (syncStatus) {
+    setSyncStatus((prev: any) => ({ ...(prev || {}), [field]: value }))
+    if (syncStatus?.id) {
       await supabase.from('sync_statuses').update({ [field]: value }).eq('id', syncStatus.id)
     } else {
-      await supabase.from('sync_statuses').insert({ project_id: id, [field]: value })
+      const { data } = await supabase.from('sync_statuses').insert({ project_id: id, purpose: 3, granularity: 3, state: 3, priority: 3, interpretation: 3, [field]: value }).select().single()
+      if (data) setSyncStatus(data)
     }
-    fetchAll()
   }
 
   const issueCount = (t: Theme) =>
@@ -161,7 +162,7 @@ export default function ProjectDetailPage() {
         {/* SYNC STATUS */}
         <div className="bg-white rounded-xl p-5 border border-slate-200 mb-8">
           <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">SYNC STATUS</h2>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             {[
               { key: 'purpose', label: '目的同期' },
               { key: 'granularity', label: '粒度同期' },
@@ -171,18 +172,20 @@ export default function ProjectDetailPage() {
             ].map(axis => {
               const val = syncStatus?.[axis.key] ?? 3
               return (
-                <div key={axis.key} className="flex items-center gap-4">
-                  <span className="text-xs text-slate-500 w-20">{axis.label}</span>
-                  <input
-                    type="range"
-                    min={1}
-                    max={5}
-                    step={1}
-                    value={val}
-                    onChange={e => updateProjectSyncStatus(axis.key, Number(e.target.value))}
-                    className="flex-1 accent-blue-500"
-                  />
-                  <span className="text-xs font-medium text-slate-700 w-8 text-right">{val}/5</span>
+                <div key={axis.key} className="flex items-center gap-3">
+                  <span className="text-xs text-slate-500 w-20 shrink-0">{axis.label}</span>
+                  <div className="flex gap-2 flex-1">
+                    {[1, 2, 3, 4, 5].map(v => (
+                      <button
+                        key={v}
+                        onClick={() => updateProjectSyncStatus(axis.key, v)}
+                        className={`flex-1 py-1.5 rounded text-xs font-medium transition-colors ${v === val ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
+                      >
+                        {v}
+                      </button>
+                    ))}
+                  </div>
+                  <span className="text-xs font-medium text-slate-500 w-6 text-right">{val}</span>
                 </div>
               )
             })}
