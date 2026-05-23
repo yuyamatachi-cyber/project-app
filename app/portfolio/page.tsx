@@ -102,12 +102,8 @@ export default function PortfolioPage() {
     fetchAll()
   }
 
-  const projectStatus = (p: Project) => {
-    const themes = p.themes || []
-    if (themes.length === 0) return 'not_started'
-    if (themes.some((t: any) => t.status === 'in_progress')) return 'in_progress'
-    if (themes.every((t: any) => t.status === 'done')) return 'done'
-    return 'not_started'
+  const projectStatus = (p: any) => {
+    return p.status || 'not_started'
   }
 
   const statusLabel = (s: string) =>

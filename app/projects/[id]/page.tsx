@@ -94,6 +94,11 @@ export default function ProjectDetailPage() {
     }
   }
 
+  async function saveProjectStatus(status: string) {
+    await supabase.from('projects').update({ status }).eq('id', id)
+    fetchAll()
+  }
+
   async function saveSyncStatus() {
     const saveData = {
       purpose: syncStatus?.purpose ?? 3,
@@ -198,7 +203,21 @@ export default function ProjectDetailPage() {
 
         {/* SYNC STATUS */}
         <div className="bg-white rounded-xl p-5 border border-slate-200 mb-8">
-          <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">SYNC STATUS</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider">SYNC STATUS</h2>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-400">プロジェクトステータス</span>
+              <select
+                value={(project as any)?.status || 'not_started'}
+                onChange={e => saveProjectStatus(e.target.value)}
+                className="bg-white border border-slate-200 text-slate-700 text-xs px-3 py-1.5 rounded-lg"
+              >
+                <option value="not_started">未着手</option>
+                <option value="in_progress">進行中</option>
+                <option value="done">完了</option>
+              </select>
+            </div>
+          </div>
           <div className="grid grid-cols-5 gap-4">
             {[
               { key: 'purpose', label: '目的同期' },
