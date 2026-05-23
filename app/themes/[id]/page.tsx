@@ -217,8 +217,8 @@ export default function ThemeDetailPage() {
     alert('共有URLをコピーしました')
   }
 
-  if (loading) return <div className="flex items-center justify-center h-screen text-gray-400">Loading...</div>
-  if (!theme) return <div className="flex items-center justify-center h-screen text-gray-400">Theme not found</div>
+  if (loading) return <div className="flex items-center justify-center h-screen text-slate-500">Loading...</div>
+  if (!theme) return <div className="flex items-center justify-center h-screen text-slate-500">Theme not found</div>
 
   const tasks = theme.tasks || []
   const backlog = tasks.filter((t: any) => t.status === 'backlog')
@@ -236,44 +236,44 @@ export default function ThemeDetailPage() {
   const roles = ['owner', 'pm', 'executor', 'decision_maker']
 
   return (
-    <div className="flex h-screen bg-[#1a1a1a]">
-      <aside className="w-56 bg-[#242424] border-r border-[#3a3a3a] flex flex-col p-4 gap-2">
-        <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">プロジェクト</div>
-        <a href="/portfolio" className="text-gray-300 hover:bg-[#333333] px-3 py-2 rounded text-sm">← Portfolio</a>
+    <div className="flex h-screen bg-slate-100">
+      <aside className="w-56 bg-white border-r border-slate-200 flex flex-col p-4 gap-2">
+        <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">プロジェクト</div>
+        <a href="/portfolio" className="text-slate-600 hover:bg-slate-50 px-3 py-2 rounded text-sm">← Portfolio</a>
         {theme.project && (
-          <a href={`/projects/${theme.project.id}`} className="text-gray-300 hover:bg-[#333333] px-3 py-2 rounded text-sm">← {theme.project.name}</a>
+          <a href={`/projects/${theme.project.id}`} className="text-slate-600 hover:bg-slate-50 px-3 py-2 rounded text-sm">← {theme.project.name}</a>
         )}
       </aside>
-      <main className="flex-1 overflow-auto p-8">
+      <main className="flex-1 overflow-auto p-8 bg-slate-100">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-white">{theme.name}</h1>
-            <span className={`inline-block mt-1 px-2 py-1 rounded-full text-xs font-medium ${theme.status === 'done' ? 'bg-green-100 text-green-700' : theme.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 'bg-[#333333] text-gray-400'}`}>
+            <h1 className="text-2xl font-bold text-slate-900">{theme.name}</h1>
+            <span className={`inline-block mt-1 px-2 py-1 rounded-full text-xs font-medium ${theme.status === 'done' ? 'bg-green-100 text-green-700' : theme.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-500'}`}>
               {statusLabel(theme.status)}
             </span>
           </div>
-          <button onClick={shareUrl} className="bg-[#333333] hover:bg-[#3a3a3a] text-gray-300 text-xs px-4 py-2 rounded-lg border border-[#3a3a3a]">🔗 共有</button>
+          <button onClick={shareUrl} className="bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs px-4 py-2 rounded-lg border border-slate-200">🔗 共有</button>
         </div>
         <div className="grid grid-cols-1 gap-6">
           <div className="flex flex-col gap-6">
-            <div className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
+            <div className="bg-white rounded-xl p-5 border border-slate-200">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider">WHO</h2>
-                <button onClick={() => setAddingMember(!addingMember)} className="text-xs text-[#FFE600] hover:text-[#f0d800]">＋ メンバー追加</button>
+                <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider">WHO</h2>
+                <button onClick={() => setAddingMember(!addingMember)} className="text-xs text-blue-600 hover:text-blue-700">＋ メンバー追加</button>
               </div>
               {addingMember && (
                 <div className="flex flex-col gap-2 mb-3">
                   <div className="flex gap-2">
                     <input value={newMemberName} onChange={e => setNewMemberName(e.target.value)} placeholder="名前" className="bg-white text-slate-900 text-xs px-2 py-1 rounded flex-1" />
                     <input value={newMemberInitial} onChange={e => setNewMemberInitial(e.target.value)} placeholder="略称" className="bg-white text-slate-900 text-xs px-2 py-1 rounded w-16" />
-                    <button onClick={addMember} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded">追加</button>
+                    <button onClick={addMember} className="bg-blue-600 text-white text-xs px-3 py-1 rounded">追加</button>
                   </div>
-                  <div className="border-t border-[#3a3a3a] pt-2">
-                    <div className="text-xs text-gray-500 mb-1">メンバー管理</div>
+                  <div className="border-t border-slate-200 pt-2">
+                    <div className="text-xs text-slate-400 mb-1">メンバー管理</div>
                     {members.map(m => (
                       <div key={m.id} className="flex gap-2 items-center mb-1">
-                        <span className="text-xs text-gray-300 flex-1">{m.name}（{m.initial}）</span>
-                        <button onClick={() => { const name = prompt('名前', m.name); const initial = prompt('略称', m.initial); if (name && initial) updateMember(m.id, name, initial) }} className="text-xs text-[#FFE600] hover:text-[#f0d800]">編集</button>
+                        <span className="text-xs text-slate-600 flex-1">{m.name}（{m.initial}）</span>
+                        <button onClick={() => { const name = prompt('名前', m.name); const initial = prompt('略称', m.initial); if (name && initial) updateMember(m.id, name, initial) }} className="text-xs text-blue-600 hover:text-blue-700">編集</button>
                         <button onClick={() => deleteMember(m.id)} className="text-xs text-red-400 hover:text-red-600">削除</button>
                       </div>
                     ))}
@@ -285,7 +285,7 @@ export default function ThemeDetailPage() {
                   const assigned = theme.theme_members?.find((tm: any) => tm.role === role)
                   return (
                     <div key={role} className="flex items-center gap-2">
-                      <span className="text-xs text-gray-500 w-20">{roleLabel(role)}</span>
+                      <span className="text-xs text-slate-400 w-20">{roleLabel(role)}</span>
                       <select value={assigned?.member_id || ''} onChange={e => assignMember(role, e.target.value)} className="flex-1 bg-white text-slate-900 text-xs px-2 py-1 rounded">
                         <option value="">未割当</option>
                         {members.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
@@ -295,15 +295,15 @@ export default function ThemeDetailPage() {
                 })}
               </div>
             </div>
-            <div className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
-              <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">WHEN</h2>
+            <div className="bg-white rounded-xl p-5 border border-slate-200">
+              <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">WHEN</h2>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500">期日</span>
+                  <span className="text-xs text-slate-400">期日</span>
                   <input type="date" value={theme.milestones?.due_date || ''} onChange={e => updateMilestone({ due_date: e.target.value })} className="bg-white text-slate-900 text-sm px-2 py-1 rounded" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500">完了</span>
+                  <span className="text-xs text-slate-400">完了</span>
                   <input type="checkbox" checked={theme.milestones?.is_completed || false} onChange={e => updateMilestone({ is_completed: e.target.checked })} className="w-4 h-4" />
                 </div>
                 {theme.milestones?.due_date && !theme.milestones?.is_completed && new Date(theme.milestones.due_date) < new Date() && (
@@ -311,54 +311,54 @@ export default function ThemeDetailPage() {
                 )}
               </div>
             </div>
-            <div className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
+            <div className="bg-white rounded-xl p-5 border border-slate-200">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider">進捗</h2>
-                <button onClick={() => setShowProgressForm(!showProgressForm)} className="text-xs text-[#FFE600] hover:text-[#f0d800]">＋ 進捗入力</button>
+                <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider">進捗</h2>
+                <button onClick={() => setShowProgressForm(!showProgressForm)} className="text-xs text-blue-600 hover:text-blue-700">＋ 進捗入力</button>
               </div>
-              <div className="text-xs text-gray-500 mb-3">タスク消化率：{taskProgressRate}%（{done.length}/{tasks.length}件）</div>
+              <div className="text-xs text-slate-400 mb-3">タスク消化率：{taskProgressRate}%（{done.length}/{tasks.length}件）</div>
               {showProgressForm && (
-                <div className="bg-[#1a1a1a] rounded-lg p-4 mb-4 border border-[#3a3a3a]">
+                <div className="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
                   <div className="flex flex-col gap-3">
                     <div className="flex gap-3">
                       <div className="flex flex-col gap-1 flex-1">
-                        <label className="text-xs text-gray-500">ステータス</label>
-                        <select value={progressForm.status} onChange={e => setProgressForm({ ...progressForm, status: e.target.value })} className="bg-[#242424] border border-[#3a3a3a] text-white text-sm px-2 py-1 rounded">
+                        <label className="text-xs text-slate-400">ステータス</label>
+                        <select value={progressForm.status} onChange={e => setProgressForm({ ...progressForm, status: e.target.value })} className="bg-white border border-slate-200 text-slate-900 text-sm px-2 py-1 rounded">
                           <option value="not_started">未着手</option>
                           <option value="in_progress">進行中</option>
                           <option value="done">完了</option>
                         </select>
                       </div>
                       <div className="flex flex-col gap-1 flex-1">
-                        <label className="text-xs text-gray-500">進捗率 {progressForm.progress_rate}%</label>
+                        <label className="text-xs text-slate-400">進捗率 {progressForm.progress_rate}%</label>
                         <input type="range" min={0} max={100} value={progressForm.progress_rate} onChange={e => setProgressForm({ ...progressForm, progress_rate: Number(e.target.value) })} className="w-full" />
                       </div>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="text-xs text-gray-500">判断コメント</label>
-                      <textarea value={progressForm.comment} onChange={e => setProgressForm({ ...progressForm, comment: e.target.value })} className="bg-[#242424] border border-[#3a3a3a] text-white text-sm px-2 py-1 rounded resize-none" rows={2} />
+                      <label className="text-xs text-slate-400">判断コメント</label>
+                      <textarea value={progressForm.comment} onChange={e => setProgressForm({ ...progressForm, comment: e.target.value })} className="bg-white border border-slate-200 text-slate-900 text-sm px-2 py-1 rounded resize-none" rows={2} />
                     </div>
                     <div className="flex gap-2">
-                      <button onClick={saveProgress} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded">保存</button>
-                      <button onClick={() => setShowProgressForm(false)} className="text-gray-500 text-xs">キャンセル</button>
+                      <button onClick={saveProgress} className="bg-blue-600 text-white text-xs px-3 py-1 rounded">保存</button>
+                      <button onClick={() => setShowProgressForm(false)} className="text-slate-400 text-xs">キャンセル</button>
                     </div>
                   </div>
                 </div>
               )}
               <div className="grid grid-cols-2 gap-4">
                 {[prevLog, latestLog].map((log, i) => log ? (
-                  <div key={log.id} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a]">
-                    <div className="text-xs text-gray-500 mb-1">{i === 0 ? '前回' : '最新'} · {new Date(log.created_at).toLocaleDateString('ja-JP')}</div>
-                    <div className="text-sm font-medium text-gray-200 mb-1">{statusLabel(log.status)} · {log.progress_rate}%</div>
-                    {log.comment && <div className="text-xs text-gray-400">{log.comment}</div>}
+                  <div key={log.id} className="bg-white rounded-lg p-3 border border-slate-200">
+                    <div className="text-xs text-slate-400 mb-1">{i === 0 ? '前回' : '最新'} · {new Date(log.created_at).toLocaleDateString('ja-JP')}</div>
+                    <div className="text-sm font-medium text-slate-700 mb-1">{statusLabel(log.status)} · {log.progress_rate}%</div>
+                    {log.comment && <div className="text-xs text-slate-500">{log.comment}</div>}
                   </div>
                 ) : (
-                  <div key={i} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a] text-xs text-gray-500">{i === 0 ? '前回' : '最新'}の記録なし</div>
+                  <div key={i} className="bg-white rounded-lg p-3 border border-slate-200 text-xs text-slate-400">{i === 0 ? '前回' : '最新'}の記録なし</div>
                 ))}
               </div>
             </div>
-            <div className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
-              <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">TASKS</h2>
+            <div className="bg-white rounded-xl p-5 border border-slate-200">
+              <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">TASKS</h2>
               <div className="grid grid-cols-3 gap-4">
                 {[
                   { label: 'Backlog', tasks: backlog, status: 'backlog' },
@@ -366,18 +366,18 @@ export default function ThemeDetailPage() {
                   { label: 'Done', tasks: done, status: 'done' },
                 ].map(col => (
                   <div key={col.status}>
-                    <div className="text-xs font-medium text-gray-500 mb-2">{col.label} ({col.tasks.length})</div>
+                    <div className="text-xs font-medium text-slate-400 mb-2">{col.label} ({col.tasks.length})</div>
                     <div className="flex flex-col gap-2">
                       {col.tasks.map((t: any) => (
-                        <div key={t.id} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a]">
-                          <div className="text-sm text-gray-200 mb-2">{t.name}</div>
+                        <div key={t.id} className="bg-white rounded-lg p-3 border border-slate-200">
+                          <div className="text-sm text-slate-700 mb-2">{t.name}</div>
                           <div className="flex gap-1 flex-wrap">
                             {['backlog', 'in_progress', 'done'].filter(s => s !== t.status).map(s => (
-                              <button key={s} onClick={() => updateTaskStatus(t.id, s)} className={`text-xs rounded px-1.5 py-0.5 border font-medium ${s === 'in_progress' ? 'bg-blue-500 text-white border-blue-500' : s === 'done' ? 'bg-green-500 text-white border-green-500' : 'bg-[#333333] text-gray-300 border-[#3a3a3a]'}`}>
+                              <button key={s} onClick={() => updateTaskStatus(t.id, s)} className={`text-xs rounded px-1.5 py-0.5 border font-medium ${s === 'in_progress' ? 'bg-blue-500 text-slate-900 border-blue-500' : s === 'done' ? 'bg-green-500 text-slate-900 border-green-500' : 'bg-slate-100 text-slate-600 border-slate-200'}`}>
                                 → {s === 'backlog' ? 'Backlog' : s === 'in_progress' ? 'In Progress' : 'Done'}
                               </button>
                             ))}
-                            <button onClick={() => { const name = prompt('タスク名を変更', t.name); if (name) updateTaskName(t.id, name) }} className="text-xs text-gray-400 hover:text-gray-200 ml-auto">編集</button>
+                            <button onClick={() => { const name = prompt('タスク名を変更', t.name); if (name) updateTaskName(t.id, name) }} className="text-xs text-slate-500 hover:text-slate-700 ml-auto">編集</button>
                             <button onClick={() => deleteTask(t.id)} className="text-xs text-red-400 hover:text-red-600">✕</button>
                           </div>
                         </div>
@@ -390,26 +390,26 @@ export default function ThemeDetailPage() {
                 {addingTask ? (
                   <div className="flex gap-2">
                     <input autoFocus value={newTaskName} onChange={e => setNewTaskName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addTask()} placeholder="タスク名" className="bg-white text-slate-900 text-sm px-2 py-1 rounded flex-1" />
-                    <button onClick={addTask} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded">追加</button>
-                    <button onClick={() => setAddingTask(false)} className="text-gray-500 text-xs">キャンセル</button>
+                    <button onClick={addTask} className="bg-blue-600 text-white text-xs px-3 py-1 rounded">追加</button>
+                    <button onClick={() => setAddingTask(false)} className="text-slate-400 text-xs">キャンセル</button>
                   </div>
                 ) : (
-                  <button onClick={() => setAddingTask(true)} className="text-[#FFE600] text-sm hover:text-[#f0d800]">＋ タスク追加</button>
+                  <button onClick={() => setAddingTask(true)} className="text-blue-600 text-sm hover:text-blue-700">＋ タスク追加</button>
                 )}
               </div>
             </div>
-            <div className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
-              <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">BLOCKERS &amp; DECISIONS</h2>
+            <div className="bg-white rounded-xl p-5 border border-slate-200">
+              <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">BLOCKERS &amp; DECISIONS</h2>
               <div className="grid grid-cols-2 gap-6">
 
                 {/* Blockers - unresolvedのみ表示 */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-red-400">Blockers</span>
-                    <button onClick={() => setAddingBlocker(!addingBlocker)} className="text-xs text-[#FFE600]">＋ 追加</button>
+                    <button onClick={() => setAddingBlocker(!addingBlocker)} className="text-xs text-blue-600">＋ 追加</button>
                   </div>
                   {addingBlocker && (
-                    <div className="flex flex-col gap-2 mb-3 bg-[#2a1a1a] p-3 rounded-lg border border-red-900">
+                    <div className="flex flex-col gap-2 mb-3 bg-red-50 p-3 rounded-lg border border-red-200">
                       <input value={newBlockerContent} onChange={e => setNewBlockerContent(e.target.value)} placeholder="ブロッカー内容" className="bg-white text-slate-900 text-xs px-2 py-1 rounded" />
                       <input
                         value={blockerInputs['new']?.measure || ''}
@@ -418,18 +418,18 @@ export default function ThemeDetailPage() {
                         className="bg-white text-slate-900 text-xs px-2 py-1 rounded"
                       />
                       <div className="flex gap-2">
-                        <button onClick={addBlocker} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded font-medium flex-1">保存</button>
-                        <button onClick={() => setAddingBlocker(false)} className="text-xs text-gray-400 px-2">✕</button>
+                        <button onClick={addBlocker} className="bg-blue-600 text-white text-xs px-3 py-1 rounded font-medium flex-1">保存</button>
+                        <button onClick={() => setAddingBlocker(false)} className="text-xs text-slate-500 px-2">✕</button>
                       </div>
                     </div>
                   )}
                   <div className="flex flex-col gap-3">
                     {(theme.blockers || []).filter((b: any) => b.status === 'open').map((b: any) => (
-                      <div key={b.id} className="rounded-lg p-3 border bg-[#2a1a1a] border-red-900">
+                      <div key={b.id} className="rounded-lg p-3 border bg-red-50 border-red-200">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs font-bold text-red-400">unresolved</span>
                           <div className="flex gap-2">
-                            <button onClick={() => { setEditingBlocker(editingBlocker === b.id ? null : b.id); setEditingBlockerContent(b.content); setBlockerInputs(prev => ({ ...prev, [b.id]: { measure: b.resolved_comment || '' } })) }} className="text-xs text-[#FFE600] hover:text-[#f0d800]">編集</button>
+                            <button onClick={() => { setEditingBlocker(editingBlocker === b.id ? null : b.id); setEditingBlockerContent(b.content); setBlockerInputs(prev => ({ ...prev, [b.id]: { measure: b.resolved_comment || '' } })) }} className="text-xs text-blue-600 hover:text-blue-700">編集</button>
                             <button onClick={() => deleteBlocker(b.id)} className="text-xs text-red-400 hover:text-red-300">削除</button>
                           </div>
                         </div>
@@ -443,21 +443,21 @@ export default function ThemeDetailPage() {
                               className="bg-white text-slate-900 text-xs px-2 py-1 rounded"
                             />
                             <div className="flex gap-2">
-                              <button onClick={() => saveBlockerContent(b.id)} className="text-xs bg-[#FFE600] text-black px-3 py-1 rounded font-medium flex-1">保存</button>
-                              <button onClick={() => resolveBlocker(b.id, blockerInputs[b.id]?.measure)} className="text-xs bg-green-600 text-white px-2 py-1 rounded font-medium">解決済にする → Decision Logへ</button>
-                              <button onClick={() => setEditingBlocker(null)} className="text-xs text-gray-400 px-1">✕</button>
+                              <button onClick={() => saveBlockerContent(b.id)} className="text-xs bg-blue-600 text-white px-3 py-1 rounded font-medium flex-1">保存</button>
+                              <button onClick={() => resolveBlocker(b.id, blockerInputs[b.id]?.measure)} className="text-xs bg-green-600 text-slate-900 px-2 py-1 rounded font-medium">解決済にする → Decision Logへ</button>
+                              <button onClick={() => setEditingBlocker(null)} className="text-xs text-slate-500 px-1">✕</button>
                             </div>
                           </div>
                         ) : (
                           <div>
-                            <div className="text-sm text-gray-200">{b.content}</div>
-                            {b.resolved_comment && <div className="text-xs text-gray-400 mt-1">施策: {b.resolved_comment}</div>}
+                            <div className="text-sm text-slate-700">{b.content}</div>
+                            {b.resolved_comment && <div className="text-xs text-slate-500 mt-1">施策: {b.resolved_comment}</div>}
                           </div>
                         )}
                       </div>
                     ))}
                     {(theme.blockers || []).filter((b: any) => b.status === 'open').length === 0 && (
-                      <div className="text-xs text-gray-500 py-2">Blockerなし</div>
+                      <div className="text-xs text-slate-400 py-2">Blockerなし</div>
                     )}
                   </div>
                 </div>
@@ -466,10 +466,10 @@ export default function ThemeDetailPage() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-yellow-400">Decision Log</span>
-                    <button onClick={() => setAddingDecision(!addingDecision)} className="text-xs text-[#FFE600]">＋ 追加</button>
+                    <button onClick={() => setAddingDecision(!addingDecision)} className="text-xs text-blue-600">＋ 追加</button>
                   </div>
                   {addingDecision && (
-                    <div className="flex flex-col gap-2 mb-3 bg-[#2a2a1a] p-3 rounded-lg border border-yellow-900">
+                    <div className="flex flex-col gap-2 mb-3 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
                       <input value={newDecisionContent} onChange={e => setNewDecisionContent(e.target.value)} placeholder="ブロッカー内容" className="bg-white text-slate-900 text-xs px-2 py-1 rounded" />
                       <input
                         value={decisionInputs['new']?.decided_by || ''}
@@ -478,18 +478,18 @@ export default function ThemeDetailPage() {
                         className="bg-white text-slate-900 text-xs px-2 py-1 rounded"
                       />
                       <div className="flex gap-2">
-                        <button onClick={addDecision} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded font-medium flex-1">保存</button>
-                        <button onClick={() => setAddingDecision(false)} className="text-xs text-gray-400 px-2">✕</button>
+                        <button onClick={addDecision} className="bg-blue-600 text-white text-xs px-3 py-1 rounded font-medium flex-1">保存</button>
+                        <button onClick={() => setAddingDecision(false)} className="text-xs text-slate-500 px-2">✕</button>
                       </div>
                     </div>
                   )}
                   <div className="flex flex-col gap-3">
                     {(theme.decision_logs || []).map((d: any) => (
-                      <div key={d.id} className="bg-[#2a2a1a] rounded-lg p-3 border border-yellow-900">
+                      <div key={d.id} className="bg-yellow-50 rounded-lg p-3 border border-yellow-200">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs font-bold text-yellow-400">decision</span>
                           <div className="flex gap-2">
-                            <button onClick={() => { setEditingDecision(editingDecision === d.id ? null : d.id); setEditingDecisionContent(d.content) }} className="text-xs text-[#FFE600] hover:text-[#f0d800]">編集</button>
+                            <button onClick={() => { setEditingDecision(editingDecision === d.id ? null : d.id); setEditingDecisionContent(d.content) }} className="text-xs text-blue-600 hover:text-blue-700">編集</button>
                             <button onClick={() => deleteDecision(d.id)} className="text-xs text-red-400 hover:text-red-300">削除</button>
                           </div>
                         </div>
@@ -503,17 +503,17 @@ export default function ThemeDetailPage() {
                               className="bg-white text-slate-900 text-xs px-2 py-1 rounded"
                             />
                             <div className="flex gap-2">
-                              <button onClick={() => saveDecisionContent(d.id)} className="text-xs bg-[#FFE600] text-black px-3 py-1 rounded font-medium flex-1">保存</button>
-                              <button onClick={() => setEditingDecision(null)} className="text-xs text-gray-400 px-1">✕</button>
+                              <button onClick={() => saveDecisionContent(d.id)} className="text-xs bg-blue-600 text-white px-3 py-1 rounded font-medium flex-1">保存</button>
+                              <button onClick={() => setEditingDecision(null)} className="text-xs text-slate-500 px-1">✕</button>
                             </div>
                           </div>
                         ) : (
                           <div>
-                            <div className="text-sm text-gray-200">{d.content}</div>
-                            {d.decided_by && <div className="text-xs text-gray-400 mt-1">施策: {d.decided_by}</div>}
+                            <div className="text-sm text-slate-700">{d.content}</div>
+                            {d.decided_by && <div className="text-xs text-slate-500 mt-1">施策: {d.decided_by}</div>}
                           </div>
                         )}
-                        <div className="border-t border-yellow-900 pt-2 mt-2">
+                        <div className="border-t border-yellow-100 pt-2 mt-2">
                           <button onClick={() => moveToBlocker(d.id)} className="text-xs text-orange-400 hover:text-orange-300">↩ Blockerに戻す</button>
                         </div>
                       </div>

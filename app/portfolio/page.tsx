@@ -108,7 +108,7 @@ export default function PortfolioPage() {
     s === 'not_started' ? '未着手' : s === 'in_progress' ? '進行中' : '完了'
 
   const statusColor = (s: string) =>
-    s === 'done' ? 'bg-green-500 text-white' : s === 'in_progress' ? 'bg-blue-500 text-white' : 'bg-[#333333] text-gray-400'
+    s === 'done' ? 'bg-green-500 text-slate-900' : s === 'in_progress' ? 'bg-blue-500 text-slate-900' : 'bg-[#333333] text-slate-500'
 
   const [syncStatuses, setSyncStatuses] = useState<Record<string, any>>({})
 
@@ -129,17 +129,17 @@ export default function PortfolioPage() {
     return Math.round(tasks.filter((t: any) => t.status === 'done').length / tasks.length * 100)
   }
 
-  if (loading) return <div className="flex items-center justify-center h-screen text-gray-400">Loading...</div>
+  if (loading) return <div className="flex items-center justify-center h-screen text-slate-500">Loading...</div>
 
   return (
-    <div className="flex h-screen bg-[#1a1a1a]">
+    <div className="flex h-screen bg-slate-100">
       <aside className="w-56 bg-[#242424] border-r border-[#3a3a3a] flex flex-col p-4 gap-2">
-        <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">プロジェクト</div>
-        <button onClick={() => setSelectedCategory(null)} className={`text-left px-3 py-2 rounded text-sm ${!selectedCategory ? 'bg-[#FFE600] text-black font-bold' : 'text-gray-300 hover:bg-[#333333]'}`}>すべて</button>
+        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">プロジェクト</div>
+        <button onClick={() => setSelectedCategory(null)} className={`text-left px-3 py-2 rounded text-sm ${!selectedCategory ? 'bg-blue-600 text-white font-bold' : 'text-slate-600 hover:bg-slate-50'}`}>すべて</button>
         {categories.map(cat => (
-          <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} className={`text-left px-3 py-2 rounded text-sm ${selectedCategory === cat.id ? 'bg-[#FFE600] text-black font-bold' : 'text-gray-300 hover:bg-[#333333]'}`}>{cat.name}</button>
+          <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} className={`text-left px-3 py-2 rounded text-sm ${selectedCategory === cat.id ? 'bg-blue-600 text-white font-bold' : 'text-slate-600 hover:bg-slate-50'}`}>{cat.name}</button>
         ))}
-        <button onClick={() => setEditingCategory(!editingCategory)} className="mt-2 text-xs text-gray-500 hover:text-gray-300 text-left px-3 py-1">⚙ カテゴリー編集</button>
+        <button onClick={() => setEditingCategory(!editingCategory)} className="mt-2 text-xs text-slate-400 hover:text-slate-600 text-left px-3 py-1">⚙ カテゴリー編集</button>
         {editingCategory && (
           <div className="mt-2 flex flex-col gap-2">
             {categories.map(cat => (
@@ -150,13 +150,19 @@ export default function PortfolioPage() {
             ))}
             <div className="flex gap-1">
               <input value={newCategoryName} onChange={e => setNewCategoryName(e.target.value)} placeholder="新規カテゴリー" className="flex-1 bg-white text-slate-900 text-xs px-2 py-1 rounded" />
-              <button onClick={addCategory} className="text-[#FFE600] text-xs px-2">＋</button>
+              <button onClick={addCategory} className="text-blue-600 text-xs px-2">＋</button>
             </div>
           </div>
         )}
       </aside>
-      <main className="flex-1 overflow-auto p-8">
-        <div className="flex items-center justify-between mb-6"><h1 className="text-2xl font-bold text-white">Project Portfolio</h1><button onClick={() => { navigator.clipboard.writeText(window.location.origin + "/share/portfolio"); alert("共有URLをコピーしました"); }} className="bg-[#333333] hover:bg-[#3a3a3a] text-gray-300 text-xs px-4 py-2 rounded-lg border border-[#3a3a3a]">🔗 共有</button></div>
+      <main className="flex-1 overflow-auto p-8 bg-slate-100">
+        <div className="flex items-center justify-between mb-6"><h1 className="text-2xl font-bold text-slate-900">Project Portfolio</h1><button onClick={() => { navigator.clipboard.writeText(window.location.origin + "/share/portfolio"); alert("共有URLをコピーしました"); }} className="bg-[#333333] hover:bg-[#3a3a3a] text-slate-600 text-xs px-4 py-2 rounded-lg border border-[#3a3a3a]">🔗 共有</button></div>
+        <div className="flex items-center gap-4 mb-4">
+          <div className="bg-[#242424] rounded-xl px-5 py-3 border border-[#3a3a3a]">
+            <span className="text-xs text-slate-500">プロジェクト総数　</span>
+            <span className="text-xl font-bold text-slate-900">{projects.length}PJ</span>
+          </div>
+        </div>
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
             {
@@ -187,17 +193,17 @@ export default function PortfolioPage() {
             <div key={k.label} className={`${k.bg} rounded-xl p-5 border ${k.border}`}>
               <div className={`text-sm font-bold ${k.labelColor} mb-3`}>{k.emoji} {k.label}</div>
               <div className="flex flex-col gap-1">
-                <div className="text-xs text-gray-400">Health {k.emoji} <span className="text-white font-bold">{k.pj === 0 ? '—' : `${k.pj}PJ`}</span></div>
-                <div className="text-xs text-gray-400">意思決定待ち <span className="text-white font-bold">{k.issues === 0 ? '—' : `${k.issues}件`}</span></div>
-                <div className="text-xs text-gray-400">SYNC平均 <span className="text-white font-bold">{k.sync === null ? '—' : `${k.sync}/5`}</span></div>
+                <div className="text-xs text-slate-500">Health {k.emoji} <span className="text-slate-900 font-bold">{k.pj === 0 ? '—' : `${k.pj}PJ`}</span></div>
+                <div className="text-xs text-slate-500">意思決定待ち <span className="text-slate-900 font-bold">{k.issues === 0 ? '—' : `${k.issues}件`}</span></div>
+                <div className="text-xs text-slate-500">SYNC平均 <span className="text-slate-900 font-bold">{k.sync === null ? '—' : `${k.sync}/5`}</span></div>
               </div>
             </div>
           ))}
         </div>
-        <div className="bg-[#242424] rounded-xl border border-[#3a3a3a] overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#3a3a3a] text-gray-400 text-xs uppercase tracking-wider">
+              <tr className="border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
                 <th className="text-left px-4 py-3">Project名</th>
                 <th className="text-left px-4 py-3">カテゴリー</th>
                 <th className="text-center px-4 py-3">Health</th>
@@ -209,9 +215,9 @@ export default function PortfolioPage() {
             </thead>
             <tbody>
               {filtered.map(p => (
-                <tr key={p.id} className="border-b border-[#3a3a3a] hover:bg-[#333333] transition-colors">
-                  <td className="px-4 py-3"><a href={`/projects/${p.id}`} className="text-[#FFE600] hover:underline font-medium">{p.name}</a></td>
-                  <td className="px-4 py-3 text-gray-300">{p.category?.name || '—'}</td>
+                <tr key={p.id} className="border-b border-slate-200 hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-3"><a href={`/projects/${p.id}`} className="text-blue-600 hover:underline font-medium">{p.name}</a></td>
+                  <td className="px-4 py-3 text-slate-600">{p.category?.name || '—'}</td>
                   <td className="px-4 py-3 text-center">
                     <select value={p.health} onChange={e => updateHealth(p.id, e.target.value)} className="bg-transparent text-lg cursor-pointer">
                       <option value="green">🟢</option>
@@ -225,12 +231,12 @@ export default function PortfolioPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`text-sm font-bold ${syncAvg(p) === null ? 'text-gray-500' : (syncAvg(p) as number) >= 4 ? 'text-green-400' : (syncAvg(p) as number) <= 2 ? 'text-red-400' : 'text-[#FFE600]'}`}>
-                      {syncAvg(p) === null ? '—' : `${syncAvg(p)}/5`}
+                    <span className={`text-sm font-bold ${syncAvg(p) === null ? 'text-slate-400' : (syncAvg(p) as number) >= 4 ? 'text-green-400' : (syncAvg(p) as number) <= 2 ? 'text-red-400' : 'text-blue-600'}`}>
+                      {syncAvg(p) === null ? '—' : `${Math.round((syncAvg(p) as number) / 5 * 100)}%`}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${openIssues(p) > 0 ? 'bg-red-900 text-red-300' : 'bg-[#333333] text-gray-400'}`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${openIssues(p) > 0 ? 'bg-red-900 text-red-300' : 'bg-[#333333] text-slate-500'}`}>
                       {openIssues(p) > 0 ? `Blockers ${openIssues(p)}件` : '—'}
                     </span>
                   </td>
@@ -242,12 +248,12 @@ export default function PortfolioPage() {
                           <option value="">未選択</option>
                           {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
-                        <button onClick={() => updateProject(p.id)} className="text-xs text-[#FFE600] hover:text-[#f0d800]">保存</button>
-                        <button onClick={() => setEditingProject(null)} className="text-xs text-gray-500">✕</button>
+                        <button onClick={() => updateProject(p.id)} className="text-xs text-blue-600 hover:text-blue-700">保存</button>
+                        <button onClick={() => setEditingProject(null)} className="text-xs text-slate-400">✕</button>
                       </div>
                     ) : (
                       <div className="flex gap-2 justify-center">
-                        <button onClick={() => { setEditingProject(p.id); setEditProjectName(p.name); setEditProjectCategory(p.category_id || '') }} className="text-xs text-[#FFE600] hover:text-[#f0d800]">編集</button>
+                        <button onClick={() => { setEditingProject(p.id); setEditProjectName(p.name); setEditProjectCategory(p.category_id || '') }} className="text-xs text-blue-600 hover:text-blue-700">編集</button>
                         <button onClick={() => deleteProject(p.id)} className="text-xs text-red-400 hover:text-red-600">削除</button>
                       </div>
                     )}
@@ -255,25 +261,25 @@ export default function PortfolioPage() {
                 </tr>
               ))}
               {addingProject ? (
-                <tr className="border-b border-[#3a3a3a] bg-[#333333]">
+                <tr className="border-b border-slate-200 bg-[#333333]">
                   <td className="px-4 py-3">
-                    <input autoFocus value={newProjectName} onChange={e => setNewProjectName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addProject()} placeholder="Project名" className="bg-[#3a3a3a] text-white px-2 py-1 rounded text-sm w-full" />
+                    <input autoFocus value={newProjectName} onChange={e => setNewProjectName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addProject()} placeholder="Project名" className="bg-[#3a3a3a] text-slate-900 px-2 py-1 rounded text-sm w-full" />
                   </td>
                   <td className="px-4 py-3">
-                    <select value={newProjectCategory} onChange={e => setNewProjectCategory(e.target.value)} className="bg-[#3a3a3a] text-white px-2 py-1 rounded text-sm">
+                    <select value={newProjectCategory} onChange={e => setNewProjectCategory(e.target.value)} className="bg-[#3a3a3a] text-slate-900 px-2 py-1 rounded text-sm">
                       <option value="">カテゴリー選択</option>
                       {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                     </select>
                   </td>
                   <td colSpan={5} className="px-4 py-3">
-                    <button onClick={addProject} className="bg-[#FFE600] text-black px-3 py-1 rounded text-xs mr-2">追加</button>
-                    <button onClick={() => setAddingProject(false)} className="text-gray-400 text-xs">キャンセル</button>
+                    <button onClick={addProject} className="bg-blue-600 text-white px-3 py-1 rounded text-xs mr-2">追加</button>
+                    <button onClick={() => setAddingProject(false)} className="text-slate-500 text-xs">キャンセル</button>
                   </td>
                 </tr>
               ) : (
                 <tr>
                   <td colSpan={7} className="px-4 py-3">
-                    <button onClick={() => setAddingProject(true)} className="text-[#FFE600] text-sm hover:text-[#f0d800]">＋ Project追加</button>
+                    <button onClick={() => setAddingProject(true)} className="text-blue-600 text-sm hover:text-blue-700">＋ Project追加</button>
                   </td>
                 </tr>
               )}

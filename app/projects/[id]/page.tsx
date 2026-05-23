@@ -169,7 +169,7 @@ export default function ProjectDetailPage() {
         <div className="grid grid-cols-2 gap-4 mb-8">
           {contextFields.map(f => (
             <div key={f.key} className="bg-white rounded-xl p-4 border border-slate-200">
-              <div className="text-xs font-bold text-[#FFE600] mb-2">{f.label}</div>
+              <div className="text-xs font-bold text-blue-600 mb-2">{f.label}</div>
               {editingField === f.key ? (
                 <div className="flex flex-col gap-2">
                   <textarea
@@ -180,7 +180,7 @@ export default function ProjectDetailPage() {
                     rows={3}
                   />
                   <div className="flex gap-2">
-                    <button onClick={() => saveField(f.key, fieldValue)} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded">保存</button>
+                    <button onClick={() => saveField(f.key, fieldValue)} className="bg-blue-600 text-white text-xs px-3 py-1 rounded">保存</button>
                     <button onClick={() => setEditingField(null)} className="text-slate-500 text-xs">キャンセル</button>
                   </div>
                 </div>
@@ -197,7 +197,7 @@ export default function ProjectDetailPage() {
         </div>
 
         {/* SYNC STATUS */}
-        <div className="bg-[#242424] rounded-xl p-5 border border-slate-200 mb-8">
+        <div className="bg-white rounded-xl p-5 border border-slate-200 mb-8">
           <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">SYNC STATUS</h2>
           <div className="grid grid-cols-5 gap-4">
             {[
@@ -245,7 +245,7 @@ export default function ProjectDetailPage() {
             })}
           </div>
           <div className="flex justify-end mt-4">
-            <button onClick={saveSyncStatus} className={`text-xs px-4 py-2 rounded-lg font-medium transition-colors ${syncSaved ? 'bg-green-500 text-slate-900' : 'bg-[#FFE600] text-black hover:bg-[#f0d800]'}`}>
+            <button onClick={saveSyncStatus} className={`text-xs px-4 py-2 rounded-lg font-medium transition-colors ${syncSaved ? 'bg-green-500 text-slate-900' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>
               {syncSaved ? '✓ 保存しました' : '保存'}
             </button>
           </div>
@@ -270,7 +270,7 @@ export default function ProjectDetailPage() {
               {themes.map(t => (
                 <tr key={t.id} className="border-b border-slate-200 hover:bg-slate-100 transition-colors">
                   <td className="px-4 py-3">
-                    <a href={`/themes/${t.id}`} className="text-[#FFE600] hover:underline font-medium">{t.name}</a>
+                    <a href={`/themes/${t.id}`} className="text-blue-600 hover:underline font-medium">{t.name}</a>
                   </td>
                   <td className="px-4 py-3 text-center">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor(t.status)}`}>
@@ -285,7 +285,7 @@ export default function ProjectDetailPage() {
                   </td>
                   <td className="px-4 py-3 text-center">
                     <div className="flex gap-2 justify-center">
-                      <button onClick={() => { const name = prompt('Theme名を変更', t.name); if (name) updateThemeName(t.id, name) }} className="text-xs text-[#FFE600] hover:text-[#f0d800]">編集</button>
+                      <button onClick={() => { const name = prompt('Theme名を変更', t.name); if (name) updateThemeName(t.id, name) }} className="text-xs text-blue-600 hover:text-blue-700">編集</button>
                       <button onClick={() => deleteTheme(t.id)} className="text-xs text-red-400 hover:text-red-600">削除</button>
                     </div>
                   </td>
@@ -303,7 +303,7 @@ export default function ProjectDetailPage() {
                         placeholder="Theme名"
                         className="bg-[#3a3a3a] text-slate-900 px-2 py-1 rounded text-sm flex-1"
                       />
-                      <button onClick={addTheme} className="bg-[#FFE600] text-black px-3 py-1 rounded text-xs">追加</button>
+                      <button onClick={addTheme} className="bg-blue-600 text-white px-3 py-1 rounded text-xs">追加</button>
                       <button onClick={() => setAddingTheme(false)} className="text-slate-500 text-xs">キャンセル</button>
                     </div>
                   </td>
@@ -311,7 +311,7 @@ export default function ProjectDetailPage() {
               ) : (
                 <tr>
                   <td colSpan={4} className="px-4 py-3">
-                    <button onClick={() => setAddingTheme(true)} className="text-[#FFE600] text-sm hover:text-[#f0d800]">＋ Theme追加</button>
+                    <button onClick={() => setAddingTheme(true)} className="text-blue-600 text-sm hover:text-blue-700">＋ Theme追加</button>
                   </td>
                 </tr>
               )}
