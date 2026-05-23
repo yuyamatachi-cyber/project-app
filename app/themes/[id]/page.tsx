@@ -354,7 +354,7 @@ export default function ThemeDetailPage() {
               <div className="grid grid-cols-2 gap-4">
                 {[prevLog, latestLog].map((log, i) => log ? (
                   <div key={log.id} className="bg-white rounded-lg p-3 border border-slate-200">
-                    <div className="text-xs text-slate-400 mb-1 font-medium">{i === 0 ? '前回' : '最新'} · {new Date(log.created_at).toLocaleDateString('ja-JP')}</div>
+                    <div className={`text-xs mb-1 font-medium ${i === 0 ? 'text-slate-400' : 'text-red-500'}`}>{i === 0 ? '前回' : '最新'} · {new Date(log.created_at).toLocaleDateString('ja-JP')}</div>
                     <div className="text-base font-bold text-slate-800 mb-1">{statusLabel(log.status)} · {log.progress_rate}%</div>
                     {log.comment && <div className="text-xs text-slate-500">{log.comment}</div>}
                   </div>
