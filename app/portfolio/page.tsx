@@ -267,12 +267,12 @@ export default function PortfolioPage() {
                 </tr>
               ))}
               {addingProject ? (
-                <tr className="border-b border-slate-200 bg-[#333333]">
+                <tr className="border-b border-slate-200 bg-slate-50">
                   <td className="px-4 py-3">
-                    <input autoFocus value={newProjectName} onChange={e => setNewProjectName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addProject()} placeholder="Project名" className="bg-[#3a3a3a] text-slate-900 px-2 py-1 rounded text-sm w-full" />
+                    <input autoFocus value={newProjectName} onChange={e => setNewProjectName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addProject()} placeholder="Project名" className="bg-white border border-slate-300 text-slate-900 px-2 py-1 rounded text-sm w-full" />
                   </td>
                   <td className="px-4 py-3">
-                    <select value={newProjectCategory} onChange={e => setNewProjectCategory(e.target.value)} className="bg-[#3a3a3a] text-slate-900 px-2 py-1 rounded text-sm">
+                    <select value={newProjectCategory} onChange={e => setNewProjectCategory(e.target.value)} className="bg-white border border-slate-300 text-slate-900 px-2 py-1 rounded text-sm">
                       <option value="">カテゴリー選択</option>
                       {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                     </select>
