@@ -90,16 +90,6 @@ export default function ThemeDetailPage() {
     fetchAll()
   }
 
-  async function updateSyncStatus(field: string, value: number) {
-    const existing = theme?.sync_statuses
-    if (existing) {
-      await supabase.from('sync_statuses').update({ [field]: value }).eq('theme_id', id)
-    } else {
-      await supabase.from('sync_statuses').insert({ theme_id: id, [field]: value })
-    }
-    fetchAll()
-  }
-
   async function updateMilestone(updates: any) {
     const existing = theme?.milestones
     if (existing) {
@@ -186,19 +176,13 @@ export default function ThemeDetailPage() {
   const resolvedBlockers = (theme.blockers || []).filter((b: any) => b.status === 'resolved')
   const openDecisions = (theme.decision_logs || []).filter((d: any) => d.status === 'open')
   const resolvedDecisions = (theme.decision_logs || []).filter((d: any) => d.status === 'resolved')
-  const syncAxes = [
-    { key: 'purpose_sync', label: '目的同期' },
-    { key: 'granularity_sync', label: '粒度同期' },
-    { key: 'state_sync', label: '状態同期' },
-    { key: 'priority_sync', label: '優先度同期' },
-    { key: 'interpretation_sync', label: '解釈同期' },
-  ]
+
   const roles = ['owner', 'pm', 'executor', 'decision_maker']
 
   return (
     <div className="flex h-screen bg-slate-50">
       <aside className="w-56 bg-white border-r border-slate-200 flex flex-col p-4 gap-2">
-        <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">LinkBPO</div>
+        <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">プロジェクト</div>
         <a href="/portfolio" className="text-slate-600 hover:bg-slate-100 px-3 py-2 rounded text-sm">← Portfolio</a>
         {theme.project && (
           <a href={`/projects/${theme.project.id}`} className="text-slate-600 hover:bg-slate-100 px-3 py-2 rounded text-sm">← {theme.project.name}</a>
@@ -214,8 +198,8 @@ export default function ThemeDetailPage() {
           </div>
           <button onClick={shareUrl} className="bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs px-4 py-2 rounded-lg border border-slate-200">🔗 共有</button>
         </div>
-        <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-2 flex flex-col gap-6">
+        <div className="grid grid-cols-1 gap-6">
+          <div className="flex flex-col gap-6">
             <div className="bg-white rounded-xl p-5 border border-slate-200">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider">WHO</h2>
@@ -434,26 +418,7 @@ export default function ThemeDetailPage() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-6">
-            <div className="bg-white rounded-xl p-5 border border-slate-200">
-              <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">SYNC STATUS</h2>
-              <div className="flex flex-col gap-4">
-                {syncAxes.map(axis => (
-                  <div key={axis.key}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs text-slate-500">{axis.label}</span>
-                      <span className="text-xs font-medium text-slate-700">{theme.sync_statuses?.[axis.key] ?? 3}/5</span>
-                    </div>
-                    <div className="flex gap-1">
-                      {[1, 2, 3, 4, 5].map(v => (
-                        <button key={v} onClick={() => updateSyncStatus(axis.key, v)} className={`flex-1 h-2 rounded-full transition-colors ${v <= (theme.sync_statuses?.[axis.key] ?? 3) ? 'bg-blue-500' : 'bg-slate-200'}`} />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+
         </div>
       </main>
     </div>

@@ -26,7 +26,7 @@ export default function ProjectDetailPage() {
   async function fetchAll() {
     setLoading(true)
     const [{ data: proj }, { data: thms }, { data: cats }] = await Promise.all([
-      supabase.from('projects').select('*, category:categories(*)').eq('id', id).single(),
+      supabase.from('projects').select('*, category:categories(*), sync_statuses(*)').eq('id', id).single(),
       supabase.from('themes').select('*, tasks(*), blockers(*), decision_logs(*)').eq('project_id', id).order('created_at'),
       supabase.from('categories').select('*').order('created_at'),
     ])
@@ -79,6 +79,16 @@ export default function ProjectDetailPage() {
     }
   }
 
+  async function updateProjectSyncStatus(field: string, value: number) {
+    const existing = project?.sync_statuses?.[0]
+    if (existing) {
+      await supabase.from('sync_statuses').update({ [field]: value }).eq('id', existing.id)
+    } else {
+      await supabase.from('sync_statuses').insert({ project_id: id, [field]: value })
+    }
+    fetchAll()
+  }
+
   const issueCount = (t: Theme) =>
     (t.blockers?.filter((b: any) => b.status === 'open').length || 0) +
     (t.decision_logs?.filter((d: any) => d.status === 'open').length || 0)
@@ -102,7 +112,7 @@ export default function ProjectDetailPage() {
   return (
     <div className="flex h-screen bg-slate-50">
       <aside className="w-56 bg-white border-r border-slate-200 flex flex-col p-4 gap-2">
-        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">LinkBPO</div>
+        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">プロジェクト</div>
         <a href="/portfolio" className="text-slate-600 hover:bg-slate-100 px-3 py-2 rounded text-sm">← Portfolio</a>
       </aside>
       <main className="flex-1 overflow-auto p-8">
@@ -144,6 +154,36 @@ export default function ProjectDetailPage() {
               )}
             </div>
           ))}
+        </div>
+
+        {/* SYNC STATUS */}
+        <div className="bg-white rounded-xl p-5 border border-slate-200 mb-8">
+          <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">SYNC STATUS</h2>
+          <div className="grid grid-cols-5 gap-4">
+            {[
+              { key: 'purpose_sync', label: '目的同期' },
+              { key: 'granularity_sync', label: '粒度同期' },
+              { key: 'state_sync', label: '状態同期' },
+              { key: 'priority_sync', label: '優先度同期' },
+              { key: 'interpretation_sync', label: '解釈同期' },
+            ].map(axis => {
+              const sync = (project as any)?.sync_statuses?.[0]
+              const val = sync?.[axis.key] ?? 3
+              return (
+                <div key={axis.key}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs text-slate-500">{axis.label}</span>
+                    <span className="text-xs font-medium text-slate-700">{val}/5</span>
+                  </div>
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map(v => (
+                      <button key={v} onClick={() => updateProjectSyncStatus(axis.key, v)} className={`flex-1 h-2 rounded-full transition-colors ${v <= val ? 'bg-blue-500' : 'bg-slate-200'}`} />
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
         </div>
 
         {/* Theme一覧 */}
