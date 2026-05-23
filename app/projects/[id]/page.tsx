@@ -162,7 +162,7 @@ export default function ProjectDetailPage() {
         {/* SYNC STATUS */}
         <div className="bg-white rounded-xl p-5 border border-slate-200 mb-8">
           <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">SYNC STATUS</h2>
-          <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-5 gap-4">
             {[
               { key: 'purpose', label: '目的同期' },
               { key: 'granularity', label: '粒度同期' },
@@ -171,21 +171,30 @@ export default function ProjectDetailPage() {
               { key: 'interpretation', label: '解釈同期' },
             ].map(axis => {
               const val = syncStatus?.[axis.key] ?? 3
+              const colorMap: Record<number, string> = {
+                1: 'bg-red-500 text-white',
+                2: 'bg-orange-400 text-white',
+                3: 'bg-yellow-400 text-white',
+                4: 'bg-lime-500 text-white',
+                5: 'bg-green-500 text-white',
+              }
+              const labelMap: Record<number, string> = {
+                1: '低', 2: '', 3: '中', 4: '', 5: '高'
+              }
               return (
-                <div key={axis.key} className="flex items-center gap-3">
-                  <span className="text-xs text-slate-500 w-20 shrink-0">{axis.label}</span>
-                  <div className="flex gap-2 flex-1">
-                    {[1, 2, 3, 4, 5].map(v => (
+                <div key={axis.key} className="flex flex-col items-center gap-2">
+                  <span className="text-xs text-slate-500 font-medium">{axis.label}</span>
+                  <div className="flex flex-col gap-1 w-full">
+                    {[5, 4, 3, 2, 1].map(v => (
                       <button
                         key={v}
                         onClick={() => updateProjectSyncStatus(axis.key, v)}
-                        className={`flex-1 py-1.5 rounded text-xs font-medium transition-colors ${v === val ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
+                        className={`w-full py-1.5 rounded text-xs font-bold transition-all ${v === val ? colorMap[v] + ' shadow-md scale-105' : 'bg-slate-100 text-slate-300 hover:bg-slate-200'}`}
                       >
-                        {v}
+                        {v}{labelMap[v] ? ` ${labelMap[v]}` : ''}
                       </button>
                     ))}
                   </div>
-                  <span className="text-xs font-medium text-slate-500 w-6 text-right">{val}</span>
                 </div>
               )
             })}
