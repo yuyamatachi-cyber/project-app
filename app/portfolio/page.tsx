@@ -12,6 +12,9 @@ export default function PortfolioPage() {
   const [newProjectName, setNewProjectName] = useState('')
   const [newProjectCategory, setNewProjectCategory] = useState('')
   const [addingProject, setAddingProject] = useState(false)
+  const [editingProject, setEditingProject] = useState<string | null>(null)
+  const [editProjectName, setEditProjectName] = useState('')
+  const [editProjectCategory, setEditProjectCategory] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => { fetchAll() }, [])
@@ -63,6 +66,18 @@ export default function PortfolioPage() {
     fetchAll()
   }
 
+  async function updateProject(id: string) {
+    await supabase.from('projects').update({ name: editProjectName, category_id: editProjectCategory || null }).eq('id', id)
+    setEditingProject(null)
+    fetchAll()
+  }
+
+  async function deleteProject(id: string) {
+    if (!confirm('このProjectを削除しますか？')) return
+    await supabase.from('projects').delete().eq('id', id)
+    fetchAll()
+  }
+
   async function addCategory() {
     if (!newCategoryName.trim()) return
     await supabase.from('categories').insert({ name: newCategoryName })
@@ -96,7 +111,7 @@ export default function PortfolioPage() {
   return (
     <div className="flex h-screen bg-slate-50">
       <aside className="w-56 bg-white border-r border-slate-200 flex flex-col p-4 gap-2">
-        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">LinkBPO</div>
+        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">プロジェクト</div>
         <button onClick={() => setSelectedCategory(null)} className={`text-left px-3 py-2 rounded text-sm ${!selectedCategory ? 'bg-blue-600 text-slate-900' : 'text-slate-600 hover:bg-slate-100'}`}>すべて</button>
         {categories.map(cat => (
           <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} className={`text-left px-3 py-2 rounded text-sm ${selectedCategory === cat.id ? 'bg-blue-600 text-slate-900' : 'text-slate-600 hover:bg-slate-100'}`}>{cat.name}</button>
@@ -118,7 +133,7 @@ export default function PortfolioPage() {
         )}
       </aside>
       <main className="flex-1 overflow-auto p-8">
-        <div className="flex items-center justify-between mb-6"><h1 className="text-2xl font-bold text-slate-900">Portfolio</h1><button onClick={() => { navigator.clipboard.writeText(window.location.origin + "/share/portfolio"); alert("共有URLをコピーしました"); }} className="bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs px-4 py-2 rounded-lg border border-slate-200">🔗 共有</button></div>
+        <div className="flex items-center justify-between mb-6"><h1 className="text-2xl font-bold text-slate-900">Project Portfolio</h1><button onClick={() => { navigator.clipboard.writeText(window.location.origin + "/share/portfolio"); alert("共有URLをコピーしました"); }} className="bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs px-4 py-2 rounded-lg border border-slate-200">🔗 共有</button></div>
         <div className="grid grid-cols-4 gap-4 mb-8">
           {[
             { label: '進行中PJ', value: inProgress },
@@ -142,6 +157,7 @@ export default function PortfolioPage() {
                 <th className="text-center px-4 py-3">進捗</th>
                 <th className="text-center px-4 py-3">Risk</th>
                 <th className="text-center px-4 py-3">Decision</th>
+                <th className="text-center px-4 py-3">操作</th>
               </tr>
             </thead>
             <tbody>
