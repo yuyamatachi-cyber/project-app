@@ -25,6 +25,7 @@ export default function ThemeDetailPage() {
   const [editingBlockerContent, setEditingBlockerContent] = useState('')
   const [editingDecision, setEditingDecision] = useState<string | null>(null)
   const [editingDecisionContent, setEditingDecisionContent] = useState('')
+  const [decisionInputs, setDecisionInputs] = useState<Record<string, { decided_by: string, content: string }>>({})
   const [progressForm, setProgressForm] = useState({ status: 'in_progress', progress_rate: 0, comment: '' })
   const [showProgressForm, setShowProgressForm] = useState(false)
   const [newMemberName, setNewMemberName] = useState('')
@@ -157,23 +158,32 @@ export default function ThemeDetailPage() {
 
   async function resolveBlocker(blockerId: string) {
     const input = blockerInputs[blockerId] || {}
-    await supabase.from('blockers').update({
-      status: 'resolved',
-      resolved_at: new Date().toISOString(),
-      resolved_by: input.resolved_by || null,
-      resolved_comment: input.resolved_comment || ''
-    }).eq('id', blockerId)
-    // Decision Logに自動記録
     const blocker = (theme.blockers || []).find((b: any) => b.id === blockerId)
-    if (blocker) {
-      await supabase.from('decision_logs').insert({
-        theme_id: id,
-        blocker_id: blockerId,
-        content: input.resolved_comment || `Blocker解消: ${blocker.content}`,
-        decided_by: input.resolved_by || null,
-        status: 'resolved'
-      })
-    }
+    if (!blocker) return
+    // Decision Logに移動（insert）
+    await supabase.from('decision_logs').insert({
+      theme_id: id,
+      blocker_id: blockerId,
+      content: blocker.content,
+      decided_by: input.resolved_by || null,
+      status: 'open'
+    })
+    // Blockerを削除
+    await supabase.from('blockers').delete().eq('id', blockerId)
+    fetchAll()
+  }
+
+  async function moveToBlocker(decisionId: string) {
+    const decision = (theme.decision_logs || []).find((d: any) => d.id === decisionId)
+    if (!decision) return
+    // Blockerに移動（insert）
+    await supabase.from('blockers').insert({
+      theme_id: id,
+      content: decision.content,
+      status: 'open'
+    })
+    // Decision Logを削除
+    await supabase.from('decision_logs').delete().eq('id', decisionId)
     fetchAll()
   }
 
@@ -184,7 +194,11 @@ export default function ThemeDetailPage() {
   }
 
   async function saveDecisionContent(decisionId: string) {
-    await supabase.from('decision_logs').update({ content: editingDecisionContent }).eq('id', decisionId)
+    const input = decisionInputs[decisionId] || {}
+    await supabase.from('decision_logs').update({
+      content: editingDecisionContent || undefined,
+      decided_by: input.decided_by || null
+    }).eq('id', decisionId)
     setEditingDecision(null)
     fetchAll()
   }
@@ -384,134 +398,133 @@ export default function ThemeDetailPage() {
             <div className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
               <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">BLOCKERS &amp; DECISIONS</h2>
               <div className="grid grid-cols-2 gap-6">
+
+                {/* Blockers */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-gray-500">Blockers</span>
-                    <button onClick={() => setAddingBlocker(!addingBlocker)} className="text-xs text-[#FFE600]">＋</button>
+                    <span className="text-xs font-bold text-red-400">Blockers</span>
+                    <button onClick={() => setAddingBlocker(!addingBlocker)} className="text-xs text-[#FFE600]">＋ 追加</button>
                   </div>
                   {addingBlocker && (
-                    <div className="flex gap-2 mb-2">
-                      <input value={newBlockerContent} onChange={e => setNewBlockerContent(e.target.value)} placeholder="ブロッカー内容" className="bg-white text-slate-900 text-xs px-2 py-1 rounded flex-1" />
-                      <button onClick={addBlocker} className="bg-[#FFE600] text-black text-xs px-2 py-1 rounded">追加</button>
+                    <div className="flex gap-2 mb-3">
+                      <input value={newBlockerContent} onChange={e => setNewBlockerContent(e.target.value)} onKeyDown={e => e.key === 'Enter' && addBlocker()} placeholder="ブロッカー内容" className="bg-white text-slate-900 text-xs px-2 py-1 rounded flex-1" />
+                      <button onClick={addBlocker} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded font-medium">追加</button>
+                      <button onClick={() => setAddingBlocker(false)} className="text-xs text-gray-400">✕</button>
                     </div>
                   )}
-                  <div className="flex flex-col gap-2">
-                    {openBlockers.map((b: any) => (
-                      <div key={b.id} className="bg-[#2a1a1a] rounded-lg p-3 border border-red-900">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-medium text-red-400">open</span>
+                  <div className="flex flex-col gap-3">
+                    {(theme.blockers || []).map((b: any) => (
+                      <div key={b.id} className={`rounded-lg p-3 border ${b.status === 'open' ? 'bg-[#2a1a1a] border-red-900' : 'bg-[#1a1a1a] border-[#3a3a3a]'}`}>
+                        {/* ヘッダー */}
+                        <div className="flex items-center justify-between mb-2">
+                          <span className={`text-xs font-bold ${b.status === 'open' ? 'text-red-400' : 'text-green-400'}`}>
+                            {b.status === 'open' ? 'unresolved' : 'resolved'}
+                          </span>
                           <div className="flex gap-2">
-                            <button onClick={() => { setEditingBlocker(b.id); setEditingBlockerContent(b.content) }} className="text-xs text-[#FFE600] hover:text-[#f0d800]">編集</button>
+                            <button onClick={() => { setEditingBlocker(editingBlocker === b.id ? null : b.id); setEditingBlockerContent(b.content) }} className="text-xs text-[#FFE600] hover:text-[#f0d800]">編集</button>
                             <button onClick={() => deleteBlocker(b.id)} className="text-xs text-red-400 hover:text-red-300">削除</button>
                           </div>
                         </div>
+                        {/* 内容（編集モード） */}
                         {editingBlocker === b.id ? (
                           <div className="flex flex-col gap-1 mb-2">
-                            <textarea value={editingBlockerContent} onChange={e => setEditingBlockerContent(e.target.value)} className="bg-white text-slate-900 text-xs px-2 py-1 rounded resize-none" rows={2} />
+                            <textarea value={editingBlockerContent} onChange={e => setEditingBlockerContent(e.target.value)} className="bg-white text-slate-900 text-xs px-2 py-1 rounded resize-none w-full" rows={2} />
                             <div className="flex gap-2">
-                              <button onClick={() => saveBlockerContent(b.id)} className="text-xs bg-[#FFE600] text-black px-2 py-0.5 rounded font-medium">保存</button>
+                              <button onClick={() => saveBlockerContent(b.id)} className="text-xs bg-[#FFE600] text-black px-3 py-1 rounded font-medium">保存</button>
                               <button onClick={() => setEditingBlocker(null)} className="text-xs text-gray-400">キャンセル</button>
                             </div>
                           </div>
                         ) : (
                           <div className="text-sm text-gray-200 mb-2">{b.content}</div>
                         )}
-                        <div className="flex flex-col gap-1 border-t border-red-900 pt-2 mt-1">
-                          <select
-                            value={blockerInputs[b.id]?.resolved_by || ''}
-                            onChange={e => setBlockerInputs(prev => ({ ...prev, [b.id]: { ...(prev[b.id] || {}), resolved_by: e.target.value } }))}
-                            className="bg-white text-slate-900 text-xs px-1 py-0.5 rounded"
-                          >
-                            <option value="">判断者を選択</option>
-                            {members.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
-                          </select>
-                          <input
-                            placeholder="判断内容（Decision Logに記録）"
-                            value={blockerInputs[b.id]?.resolved_comment || ''}
-                            onChange={e => setBlockerInputs(prev => ({ ...prev, [b.id]: { ...(prev[b.id] || {}), resolved_comment: e.target.value } }))}
-                            className="bg-white text-slate-900 text-xs px-2 py-1 rounded"
-                          />
-                          <button onClick={() => resolveBlocker(b.id)} className="text-xs bg-green-600 text-white px-2 py-1 rounded font-medium hover:bg-green-700 text-center">✓ 解決済にする → Decision Logへ</button>
-                        </div>
-                      </div>
-                    ))}
-                    {resolvedBlockers.map((b: any) => (
-                      <div key={b.id} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a]">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-medium text-green-400">resolved</span>
-                          <div className="flex gap-2">
-                            <button onClick={() => { setEditingBlocker(b.id); setEditingBlockerContent(b.content) }} className="text-xs text-[#FFE600] hover:text-[#f0d800]">編集</button>
-                            <button onClick={() => deleteBlocker(b.id)} className="text-xs text-red-400 hover:text-red-300">削除</button>
-                          </div>
-                        </div>
-                        {editingBlocker === b.id ? (
-                          <div className="flex flex-col gap-1">
-                            <textarea value={editingBlockerContent} onChange={e => setEditingBlockerContent(e.target.value)} className="bg-white text-slate-900 text-xs px-2 py-1 rounded resize-none" rows={2} />
-                            <div className="flex gap-2">
-                              <button onClick={() => saveBlockerContent(b.id)} className="text-xs bg-[#FFE600] text-black px-2 py-0.5 rounded font-medium">保存</button>
-                              <button onClick={() => setEditingBlocker(null)} className="text-xs text-gray-400">キャンセル</button>
-                            </div>
-                          </div>
-                        ) : (
-                          <div>
-                            <div className="text-sm text-gray-300">{b.content}</div>
-                            {b.resolved_comment && <div className="text-xs text-gray-500 mt-1">→ {b.resolved_comment}</div>}
+                        {/* 解決済みコメント */}
+                        {b.status === 'resolved' && b.resolved_comment && (
+                          <div className="text-xs text-gray-400 mb-2">→ {b.resolved_comment}</div>
+                        )}
+                        {/* 解決操作（openのみ） */}
+                        {b.status === 'open' && (
+                          <div className="flex flex-col gap-1 border-t border-red-900 pt-2">
+                            <select
+                              value={blockerInputs[b.id]?.resolved_by || ''}
+                              onChange={e => setBlockerInputs(prev => ({ ...prev, [b.id]: { ...(prev[b.id] || { resolved_comment: '' }), resolved_by: e.target.value } }))}
+                              className="bg-white text-slate-900 text-xs px-2 py-1 rounded"
+                            >
+                              <option value="">判断者を選択</option>
+                              {members.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                            </select>
+                            <input
+                              placeholder="判断内容"
+                              value={blockerInputs[b.id]?.resolved_comment || ''}
+                              onChange={e => setBlockerInputs(prev => ({ ...prev, [b.id]: { ...(prev[b.id] || { resolved_by: '' }), resolved_comment: e.target.value } }))}
+                              className="bg-white text-slate-900 text-xs px-2 py-1 rounded"
+                            />
+                            <button
+                              onClick={() => resolveBlocker(b.id, blockerInputs[b.id]?.resolved_by || '', blockerInputs[b.id]?.resolved_comment || '')}
+                              className="text-xs bg-green-600 text-white px-2 py-1 rounded font-medium hover:bg-green-700"
+                            >✓ 解決済にする → Decision Logへ</button>
                           </div>
                         )}
                       </div>
                     ))}
                   </div>
                 </div>
+
+                {/* Decision Log */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-gray-500">Decision Log</span>
-                    <button onClick={() => setAddingDecision(!addingDecision)} className="text-xs text-[#FFE600]">＋</button>
+                    <span className="text-xs font-bold text-yellow-400">Decision Log</span>
+                    <button onClick={() => setAddingDecision(!addingDecision)} className="text-xs text-[#FFE600]">＋ 追加</button>
                   </div>
                   {addingDecision && (
-                    <div className="flex gap-2 mb-2">
-                      <input value={newDecisionContent} onChange={e => setNewDecisionContent(e.target.value)} placeholder="判断内容" className="bg-white text-slate-900 text-xs px-2 py-1 rounded flex-1" />
-                      <button onClick={addDecision} className="bg-[#FFE600] text-black text-xs px-2 py-1 rounded">追加</button>
+                    <div className="flex gap-2 mb-3">
+                      <input value={newDecisionContent} onChange={e => setNewDecisionContent(e.target.value)} onKeyDown={e => e.key === 'Enter' && addDecision()} placeholder="判断内容" className="bg-white text-slate-900 text-xs px-2 py-1 rounded flex-1" />
+                      <button onClick={addDecision} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded font-medium">追加</button>
+                      <button onClick={() => setAddingDecision(false)} className="text-xs text-gray-400">✕</button>
                     </div>
                   )}
-                  <div className="flex flex-col gap-2">
-                    {openDecisions.map((d: any) => (
-                      <div key={d.id} className="bg-yellow-50 rounded-lg p-3 border border-yellow-100">
-                        <div className="text-xs font-medium text-yellow-600 mb-1">open</div>
-                        <div className="text-sm text-gray-200 mb-2">{d.content}</div>
-                        <div className="flex flex-col gap-1">
-                          <select onChange={e => updateDecision(d.id, { decided_by: e.target.value || null })} className="bg-[#242424] border border-[#3a3a3a] text-xs px-1 py-0.5 rounded text-gray-300">
-                            <option value="">判断者を選択</option>
-                            {members.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
-                          </select>
-                          <button onClick={() => updateDecision(d.id, { status: 'resolved' })} className="text-xs text-green-600 hover:text-green-800 text-left">✓ 解消済みにする</button>
-                          <button onClick={() => deleteDecision(d.id)} className="text-xs text-red-400 hover:text-red-600 text-left">✕ 削除</button>
-                        </div>
-                      </div>
-                    ))}
-                    {resolvedDecisions.map((d: any) => (
-                      <div key={d.id} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a]">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-medium text-green-400">resolved</span>
+                  <div className="flex flex-col gap-3">
+                    {(theme.decision_logs || []).map((d: any) => (
+                      <div key={d.id} className="bg-[#2a2a1a] rounded-lg p-3 border border-yellow-900">
+                        {/* ヘッダー */}
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-bold text-yellow-400">decision</span>
                           <div className="flex gap-2">
-                            <button onClick={() => { setEditingDecision(d.id); setEditingDecisionContent(d.content) }} className="text-xs text-[#FFE600] hover:text-[#f0d800]">編集</button>
+                            <button onClick={() => { setEditingDecision(editingDecision === d.id ? null : d.id); setEditingDecisionContent(d.content) }} className="text-xs text-[#FFE600] hover:text-[#f0d800]">編集</button>
                             <button onClick={() => deleteDecision(d.id)} className="text-xs text-red-400 hover:text-red-300">削除</button>
                           </div>
                         </div>
+                        {/* 内容（編集モード） */}
                         {editingDecision === d.id ? (
-                          <div className="flex flex-col gap-1">
-                            <textarea value={editingDecisionContent} onChange={e => setEditingDecisionContent(e.target.value)} className="bg-white text-slate-900 text-xs px-2 py-1 rounded resize-none" rows={2} />
+                          <div className="flex flex-col gap-1 mb-2">
+                            <textarea value={editingDecisionContent} onChange={e => setEditingDecisionContent(e.target.value)} className="bg-white text-slate-900 text-xs px-2 py-1 rounded resize-none w-full" rows={2} />
                             <div className="flex gap-2">
-                              <button onClick={() => saveDecisionContent(d.id)} className="text-xs bg-[#FFE600] text-black px-2 py-0.5 rounded font-medium">保存</button>
-                              <button onClick={() => setEditingDecision(null)} className="text-xs text-gray-400">キャンセル</button>
+                              <select
+                                value={decisionInputs[d.id]?.decided_by || d.decided_by || ''}
+                                onChange={e => setDecisionInputs(prev => ({ ...prev, [d.id]: { ...(prev[d.id] || {}), decided_by: e.target.value } }))}
+                                className="bg-white text-slate-900 text-xs px-2 py-1 rounded flex-1"
+                              >
+                                <option value="">判断者を選択</option>
+                                {members.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                              </select>
+                              <button onClick={() => saveDecisionContent(d.id)} className="text-xs bg-[#FFE600] text-black px-3 py-1 rounded font-medium">保存</button>
+                              <button onClick={() => setEditingDecision(null)} className="text-xs text-gray-400">✕</button>
                             </div>
                           </div>
                         ) : (
-                          <div className="text-sm text-gray-300">{d.content}</div>
+                          <div className="text-sm text-gray-200 mb-2">{d.content}</div>
                         )}
+                        {/* Blockerに戻すボタン */}
+                        <div className="border-t border-yellow-900 pt-2 mt-1">
+                          <button
+                            onClick={() => returnBlockerFromDecision(d.id, d.blocker_id)}
+                            className="text-xs text-orange-400 hover:text-orange-300"
+                          >↩ Blockerに戻す</button>
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
