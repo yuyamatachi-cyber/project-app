@@ -23,7 +23,7 @@ export default function PortfolioPage() {
     setLoading(true)
     const [{ data: cats }, { data: projs }] = await Promise.all([
       supabase.from('categories').select('*').order('created_at'),
-      supabase.from('projects').select('*, category:categories(*), themes(*, tasks(*), blockers(*), decision_logs(*))').order('created_at'),
+      supabase.from('projects').select('*, category:categories(*), themes(*, tasks(*), blockers(*), decision_logs(*)), sync_statuses(*)').order('created_at'),
     ])
     setCategories(cats || [])
     setProjects(projs || [])
@@ -49,11 +49,6 @@ export default function PortfolioPage() {
 
   async function updateHealth(id: string, health: string) {
     await supabase.from('projects').update({ health }).eq('id', id)
-    fetchAll()
-  }
-
-  async function updateRisk(id: string, risk: string) {
-    await supabase.from('projects').update({ risk }).eq('id', id)
     fetchAll()
   }
 
@@ -93,6 +88,27 @@ export default function PortfolioPage() {
   async function renameCategory(id: string, name: string) {
     await supabase.from('categories').update({ name }).eq('id', id)
     fetchAll()
+  }
+
+  const projectStatus = (p: Project) => {
+    const themes = p.themes || []
+    if (themes.length === 0) return 'not_started'
+    if (themes.some((t: any) => t.status === 'in_progress')) return 'in_progress'
+    if (themes.every((t: any) => t.status === 'done')) return 'done'
+    return 'not_started'
+  }
+
+  const statusLabel = (s: string) =>
+    s === 'not_started' ? '未着手' : s === 'in_progress' ? '進行中' : '完了'
+
+  const statusColor = (s: string) =>
+    s === 'done' ? 'bg-green-500 text-white' : s === 'in_progress' ? 'bg-blue-500 text-white' : 'bg-[#333333] text-gray-400'
+
+  const syncAvg = (p: any) => {
+    const s = p.sync_statuses?.[0]
+    if (!s) return '—'
+    const avg = Math.round(((s.purpose || 3) + (s.granularity || 3) + (s.state || 3) + (s.priority || 3) + (s.interpretation || 3)) / 5 * 10) / 10
+    return avg
   }
 
   const openIssues = (p: Project) =>
@@ -154,8 +170,8 @@ export default function PortfolioPage() {
                 <th className="text-left px-4 py-3">Project名</th>
                 <th className="text-left px-4 py-3">カテゴリー</th>
                 <th className="text-center px-4 py-3">Health</th>
-                <th className="text-center px-4 py-3">進捗</th>
-                <th className="text-center px-4 py-3">Risk</th>
+                <th className="text-center px-4 py-3">ステータス</th>
+                <th className="text-center px-4 py-3">SYNC</th>
                 <th className="text-center px-4 py-3">Decision</th>
                 <th className="text-center px-4 py-3">操作</th>
               </tr>
@@ -172,13 +188,15 @@ export default function PortfolioPage() {
                       <option value="red">🔴</option>
                     </select>
                   </td>
-                  <td className="px-4 py-3 text-center text-gray-300">{taskProgress(p)}%</td>
                   <td className="px-4 py-3 text-center">
-                    <select value={p.risk} onChange={e => updateRisk(p.id, e.target.value)} className="bg-transparent text-lg cursor-pointer">
-                      <option value="green">🟢</option>
-                      <option value="yellow">🟡</option>
-                      <option value="red">🔴</option>
-                    </select>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor(projectStatus(p))}`}>
+                      {statusLabel(projectStatus(p))}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <span className={`text-sm font-bold ${typeof syncAvg(p) === 'number' && syncAvg(p) >= 4 ? 'text-green-400' : typeof syncAvg(p) === 'number' && syncAvg(p) <= 2 ? 'text-red-400' : 'text-[#FFE600]'}`}>
+                      {syncAvg(p)}{typeof syncAvg(p) === 'number' ? '/5' : ''}
+                    </span>
                   </td>
                   <td className="px-4 py-3 text-center">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${openIssues(p) > 0 ? 'bg-red-900 text-red-300' : 'bg-[#333333] text-gray-400'}`}>
@@ -216,14 +234,14 @@ export default function PortfolioPage() {
                       {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                     </select>
                   </td>
-                  <td colSpan={4} className="px-4 py-3">
+                  <td colSpan={5} className="px-4 py-3">
                     <button onClick={addProject} className="bg-[#FFE600] text-black px-3 py-1 rounded text-xs mr-2">追加</button>
                     <button onClick={() => setAddingProject(false)} className="text-gray-400 text-xs">キャンセル</button>
                   </td>
                 </tr>
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-4 py-3">
+                  <td colSpan={7} className="px-4 py-3">
                     <button onClick={() => setAddingProject(true)} className="text-[#FFE600] text-sm hover:text-[#f0d800]">＋ Project追加</button>
                   </td>
                 </tr>
