@@ -138,8 +138,8 @@ export default function ThemeDetailPage() {
     alert('共有URLをコピーしました')
   }
 
-  if (loading) return <div className="flex items-center justify-center h-screen text-slate-500">Loading...</div>
-  if (!theme) return <div className="flex items-center justify-center h-screen text-slate-500">Theme not found</div>
+  if (loading) return <div className="flex items-center justify-center h-screen text-gray-400">Loading...</div>
+  if (!theme) return <div className="flex items-center justify-center h-screen text-gray-400">Theme not found</div>
 
   const tasks = theme.tasks || []
   const backlog = tasks.filter((t: any) => t.status === 'backlog')
@@ -163,38 +163,38 @@ export default function ThemeDetailPage() {
   const roles = ['owner', 'pm', 'executor', 'decision_maker']
 
   return (
-    <div className="flex h-screen bg-slate-50">
-      <aside className="w-56 bg-white border-r border-slate-200 flex flex-col p-4 gap-2">
-        <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">プロジェクト</div>
-        <a href="/portfolio" className="text-slate-600 hover:bg-slate-100 px-3 py-2 rounded text-sm">← Portfolio</a>
+    <div className="flex h-screen bg-[#1a1a1a]">
+      <aside className="w-56 bg-[#242424] border-r border-[#3a3a3a] flex flex-col p-4 gap-2">
+        <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">プロジェクト</div>
+        <a href="/portfolio" className="text-gray-300 hover:bg-[#333333] px-3 py-2 rounded text-sm">← Portfolio</a>
         {theme.project && (
-          <a href={`/projects/${theme.project.id}`} className="text-slate-600 hover:bg-slate-100 px-3 py-2 rounded text-sm">← {theme.project.name}</a>
+          <a href={`/projects/${theme.project.id}`} className="text-gray-300 hover:bg-[#333333] px-3 py-2 rounded text-sm">← {theme.project.name}</a>
         )}
       </aside>
       <main className="flex-1 overflow-auto p-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">{theme.name}</h1>
-            <span className={`inline-block mt-1 px-2 py-1 rounded-full text-xs font-medium ${theme.status === 'done' ? 'bg-green-100 text-green-700' : theme.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-500'}`}>
+            <h1 className="text-2xl font-bold text-white">{theme.name}</h1>
+            <span className={`inline-block mt-1 px-2 py-1 rounded-full text-xs font-medium ${theme.status === 'done' ? 'bg-green-100 text-green-700' : theme.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 'bg-[#333333] text-gray-400'}`}>
               {statusLabel(theme.status)}
             </span>
           </div>
-          <button onClick={shareUrl} className="bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs px-4 py-2 rounded-lg border border-slate-200">🔗 共有</button>
+          <button onClick={shareUrl} className="bg-[#333333] hover:bg-[#3a3a3a] text-gray-300 text-xs px-4 py-2 rounded-lg border border-[#3a3a3a]">🔗 共有</button>
         </div>
 
         <div className="grid grid-cols-3 gap-6">
           <div className="col-span-2 flex flex-col gap-6">
 
-            <div className="bg-white rounded-xl p-5 border border-slate-200">
+            <div className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider">WHO</h2>
-                <button onClick={() => setAddingMember(!addingMember)} className="text-xs text-blue-500 hover:text-blue-700">＋ メンバー追加</button>
+                <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider">WHO</h2>
+                <button onClick={() => setAddingMember(!addingMember)} className="text-xs text-[#FFE600] hover:text-[#f0d800]">＋ メンバー追加</button>
               </div>
               {addingMember && (
                 <div className="flex gap-2 mb-3">
-                  <input value={newMemberName} onChange={e => setNewMemberName(e.target.value)} placeholder="名前" className="bg-slate-100 text-slate-900 text-xs px-2 py-1 rounded flex-1" />
-                  <input value={newMemberInitial} onChange={e => setNewMemberInitial(e.target.value)} placeholder="略称" className="bg-slate-100 text-slate-900 text-xs px-2 py-1 rounded w-16" />
-                  <button onClick={addMember} className="bg-blue-600 text-white text-xs px-3 py-1 rounded">追加</button>
+                  <input value={newMemberName} onChange={e => setNewMemberName(e.target.value)} placeholder="名前" className="bg-[#333333] text-white text-xs px-2 py-1 rounded flex-1" />
+                  <input value={newMemberInitial} onChange={e => setNewMemberInitial(e.target.value)} placeholder="略称" className="bg-[#333333] text-white text-xs px-2 py-1 rounded w-16" />
+                  <button onClick={addMember} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded">追加</button>
                 </div>
               )}
               <div className="grid grid-cols-2 gap-3">
@@ -202,8 +202,8 @@ export default function ThemeDetailPage() {
                   const assigned = theme.theme_members?.find((tm: any) => tm.role === role)
                   return (
                     <div key={role} className="flex items-center gap-2">
-                      <span className="text-xs text-slate-400 w-20">{roleLabel(role)}</span>
-                      <select value={assigned?.member_id || ''} onChange={e => assignMember(role, e.target.value)} className="flex-1 bg-slate-100 text-slate-900 text-xs px-2 py-1 rounded">
+                      <span className="text-xs text-gray-500 w-20">{roleLabel(role)}</span>
+                      <select value={assigned?.member_id || ''} onChange={e => assignMember(role, e.target.value)} className="flex-1 bg-[#333333] text-white text-xs px-2 py-1 rounded">
                         <option value="">未割当</option>
                         {members.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                       </select>
@@ -213,15 +213,15 @@ export default function ThemeDetailPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-slate-200">
-              <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">WHEN</h2>
+            <div className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
+              <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">WHEN</h2>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400">期日</span>
-                  <input type="date" value={theme.milestones?.due_date || ''} onChange={e => updateMilestone({ due_date: e.target.value })} className="bg-slate-100 text-slate-900 text-sm px-2 py-1 rounded" />
+                  <span className="text-xs text-gray-500">期日</span>
+                  <input type="date" value={theme.milestones?.due_date || ''} onChange={e => updateMilestone({ due_date: e.target.value })} className="bg-[#333333] text-white text-sm px-2 py-1 rounded" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400">完了</span>
+                  <span className="text-xs text-gray-500">完了</span>
                   <input type="checkbox" checked={theme.milestones?.is_completed || false} onChange={e => updateMilestone({ is_completed: e.target.checked })} className="w-4 h-4" />
                 </div>
                 {theme.milestones?.due_date && !theme.milestones?.is_completed && new Date(theme.milestones.due_date) < new Date() && (
@@ -230,55 +230,55 @@ export default function ThemeDetailPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-slate-200">
+            <div className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider">進捗</h2>
-                <button onClick={() => setShowProgressForm(!showProgressForm)} className="text-xs text-blue-500 hover:text-blue-700">＋ 進捗入力</button>
+                <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider">進捗</h2>
+                <button onClick={() => setShowProgressForm(!showProgressForm)} className="text-xs text-[#FFE600] hover:text-[#f0d800]">＋ 進捗入力</button>
               </div>
-              <div className="text-xs text-slate-400 mb-3">タスク消化率：{taskProgressRate}%（{done.length}/{tasks.length}件）</div>
+              <div className="text-xs text-gray-500 mb-3">タスク消化率：{taskProgressRate}%（{done.length}/{tasks.length}件）</div>
               {showProgressForm && (
-                <div className="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                <div className="bg-[#1a1a1a] rounded-lg p-4 mb-4 border border-[#3a3a3a]">
                   <div className="flex flex-col gap-3">
                     <div className="flex gap-3">
                       <div className="flex flex-col gap-1 flex-1">
-                        <label className="text-xs text-slate-400">ステータス</label>
-                        <select value={progressForm.status} onChange={e => setProgressForm({ ...progressForm, status: e.target.value })} className="bg-white border border-slate-200 text-slate-900 text-sm px-2 py-1 rounded">
+                        <label className="text-xs text-gray-500">ステータス</label>
+                        <select value={progressForm.status} onChange={e => setProgressForm({ ...progressForm, status: e.target.value })} className="bg-[#242424] border border-[#3a3a3a] text-white text-sm px-2 py-1 rounded">
                           <option value="not_started">未着手</option>
                           <option value="in_progress">進行中</option>
                           <option value="done">完了</option>
                         </select>
                       </div>
                       <div className="flex flex-col gap-1 flex-1">
-                        <label className="text-xs text-slate-400">進捗率 {progressForm.progress_rate}%</label>
+                        <label className="text-xs text-gray-500">進捗率 {progressForm.progress_rate}%</label>
                         <input type="range" min={0} max={100} value={progressForm.progress_rate} onChange={e => setProgressForm({ ...progressForm, progress_rate: Number(e.target.value) })} className="w-full" />
                       </div>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="text-xs text-slate-400">判断コメント</label>
-                      <textarea value={progressForm.comment} onChange={e => setProgressForm({ ...progressForm, comment: e.target.value })} className="bg-white border border-slate-200 text-slate-900 text-sm px-2 py-1 rounded resize-none" rows={2} />
+                      <label className="text-xs text-gray-500">判断コメント</label>
+                      <textarea value={progressForm.comment} onChange={e => setProgressForm({ ...progressForm, comment: e.target.value })} className="bg-[#242424] border border-[#3a3a3a] text-white text-sm px-2 py-1 rounded resize-none" rows={2} />
                     </div>
                     <div className="flex gap-2">
-                      <button onClick={saveProgress} className="bg-blue-600 text-white text-xs px-3 py-1 rounded">保存</button>
-                      <button onClick={() => setShowProgressForm(false)} className="text-slate-400 text-xs">キャンセル</button>
+                      <button onClick={saveProgress} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded">保存</button>
+                      <button onClick={() => setShowProgressForm(false)} className="text-gray-500 text-xs">キャンセル</button>
                     </div>
                   </div>
                 </div>
               )}
               <div className="grid grid-cols-2 gap-4">
                 {[latestLog, prevLog].map((log, i) => log ? (
-                  <div key={log.id} className="bg-slate-50 rounded-lg p-3 border border-slate-200">
-                    <div className="text-xs text-slate-400 mb-1">{i === 0 ? '最新' : '前回'} · {new Date(log.created_at).toLocaleDateString('ja-JP')}</div>
-                    <div className="text-sm font-medium text-slate-700 mb-1">{statusLabel(log.status)} · {log.progress_rate}%</div>
-                    {log.comment && <div className="text-xs text-slate-500">{log.comment}</div>}
+                  <div key={log.id} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a]">
+                    <div className="text-xs text-gray-500 mb-1">{i === 0 ? '最新' : '前回'} · {new Date(log.created_at).toLocaleDateString('ja-JP')}</div>
+                    <div className="text-sm font-medium text-gray-200 mb-1">{statusLabel(log.status)} · {log.progress_rate}%</div>
+                    {log.comment && <div className="text-xs text-gray-400">{log.comment}</div>}
                   </div>
                 ) : (
-                  <div key={i} className="bg-slate-50 rounded-lg p-3 border border-slate-200 text-xs text-slate-400">{i === 0 ? '最新' : '前回'}の記録なし</div>
+                  <div key={i} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a] text-xs text-gray-500">{i === 0 ? '最新' : '前回'}の記録なし</div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-slate-200">
-              <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">TASKS</h2>
+            <div className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
+              <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">TASKS</h2>
               <div className="grid grid-cols-3 gap-4">
                 {[
                   { label: 'Backlog', tasks: backlog, status: 'backlog' },
@@ -286,14 +286,14 @@ export default function ThemeDetailPage() {
                   { label: 'Done', tasks: done, status: 'done' },
                 ].map(col => (
                   <div key={col.status}>
-                    <div className="text-xs font-medium text-slate-400 mb-2">{col.label} ({col.tasks.length})</div>
+                    <div className="text-xs font-medium text-gray-500 mb-2">{col.label} ({col.tasks.length})</div>
                     <div className="flex flex-col gap-2">
                       {col.tasks.map((t: any) => (
-                        <div key={t.id} className="bg-slate-50 rounded-lg p-3 border border-slate-200">
-                          <div className="text-sm text-slate-700 mb-2">{t.name}</div>
+                        <div key={t.id} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a]">
+                          <div className="text-sm text-gray-200 mb-2">{t.name}</div>
                           <div className="flex gap-1 flex-wrap">
                             {['backlog', 'in_progress', 'done'].filter(s => s !== t.status).map(s => (
-                              <button key={s} onClick={() => updateTaskStatus(t.id, s)} className="text-xs text-blue-500 hover:text-blue-700 border border-blue-200 rounded px-1.5 py-0.5">
+                              <button key={s} onClick={() => updateTaskStatus(t.id, s)} className="text-xs text-[#FFE600] hover:text-[#f0d800] border border-[#FFE600] rounded px-1.5 py-0.5">
                                 → {s === 'backlog' ? 'Backlog' : s === 'in_progress' ? 'In Progress' : 'Done'}
                               </button>
                             ))}
@@ -308,72 +308,72 @@ export default function ThemeDetailPage() {
               <div className="mt-3">
                 {addingTask ? (
                   <div className="flex gap-2">
-                    <input autoFocus value={newTaskName} onChange={e => setNewTaskName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addTask()} placeholder="タスク名" className="bg-slate-100 text-slate-900 text-sm px-2 py-1 rounded flex-1" />
-                    <button onClick={addTask} className="bg-blue-600 text-white text-xs px-3 py-1 rounded">追加</button>
-                    <button onClick={() => setAddingTask(false)} className="text-slate-400 text-xs">キャンセル</button>
+                    <input autoFocus value={newTaskName} onChange={e => setNewTaskName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addTask()} placeholder="タスク名" className="bg-[#333333] text-white text-sm px-2 py-1 rounded flex-1" />
+                    <button onClick={addTask} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded">追加</button>
+                    <button onClick={() => setAddingTask(false)} className="text-gray-500 text-xs">キャンセル</button>
                   </div>
                 ) : (
-                  <button onClick={() => setAddingTask(true)} className="text-blue-500 text-sm hover:text-blue-700">＋ タスク追加</button>
+                  <button onClick={() => setAddingTask(true)} className="text-[#FFE600] text-sm hover:text-[#f0d800]">＋ タスク追加</button>
                 )}
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-5 border border-slate-200">
-              <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">BLOCKERS &amp; DECISIONS</h2>
+            <div className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
+              <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">BLOCKERS &amp; DECISIONS</h2>
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-slate-400">Blockers</span>
-                    <button onClick={() => setAddingBlocker(!addingBlocker)} className="text-xs text-blue-500">＋</button>
+                    <span className="text-xs font-medium text-gray-500">Blockers</span>
+                    <button onClick={() => setAddingBlocker(!addingBlocker)} className="text-xs text-[#FFE600]">＋</button>
                   </div>
                   {addingBlocker && (
                     <div className="flex gap-2 mb-2">
-                      <input value={newBlockerContent} onChange={e => setNewBlockerContent(e.target.value)} placeholder="ブロッカー内容" className="bg-slate-100 text-slate-900 text-xs px-2 py-1 rounded flex-1" />
-                      <button onClick={addBlocker} className="bg-blue-600 text-white text-xs px-2 py-1 rounded">追加</button>
+                      <input value={newBlockerContent} onChange={e => setNewBlockerContent(e.target.value)} placeholder="ブロッカー内容" className="bg-[#333333] text-white text-xs px-2 py-1 rounded flex-1" />
+                      <button onClick={addBlocker} className="bg-[#FFE600] text-black text-xs px-2 py-1 rounded">追加</button>
                     </div>
                   )}
                   <div className="flex flex-col gap-2">
                     {openBlockers.map((b: any) => (
                       <div key={b.id} className="bg-red-50 rounded-lg p-3 border border-red-100">
                         <div className="text-xs font-medium text-red-600 mb-1">open</div>
-                        <div className="text-sm text-slate-700 mb-2">{b.content}</div>
+                        <div className="text-sm text-gray-200 mb-2">{b.content}</div>
                         <div className="flex flex-col gap-1">
-                          <select onChange={e => updateBlocker(b.id, { resolved_by: e.target.value || null })} className="bg-white border border-slate-200 text-xs px-1 py-0.5 rounded text-slate-600">
+                          <select onChange={e => updateBlocker(b.id, { resolved_by: e.target.value || null })} className="bg-[#242424] border border-[#3a3a3a] text-xs px-1 py-0.5 rounded text-gray-300">
                             <option value="">判断者を選択</option>
                             {members.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                           </select>
-                          <input placeholder="判断内容" onBlur={e => updateBlocker(b.id, { resolved_comment: e.target.value })} className="bg-white border border-slate-200 text-xs px-1 py-0.5 rounded text-slate-600" />
+                          <input placeholder="判断内容" onBlur={e => updateBlocker(b.id, { resolved_comment: e.target.value })} className="bg-[#242424] border border-[#3a3a3a] text-xs px-1 py-0.5 rounded text-gray-300" />
                           <button onClick={() => updateBlocker(b.id, { status: 'resolved', resolved_at: new Date().toISOString() })} className="text-xs text-green-600 hover:text-green-800 text-left">✓ 解消済みにする</button>
                         </div>
                       </div>
                     ))}
                     {resolvedBlockers.map((b: any) => (
-                      <div key={b.id} className="bg-slate-50 rounded-lg p-3 border border-slate-200 opacity-60">
-                        <div className="text-xs font-medium text-slate-400 mb-1">resolved</div>
-                        <div className="text-sm text-slate-600">{b.content}</div>
-                        {b.resolved_comment && <div className="text-xs text-slate-400 mt-1">→ {b.resolved_comment}</div>}
+                      <div key={b.id} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a] opacity-60">
+                        <div className="text-xs font-medium text-gray-500 mb-1">resolved</div>
+                        <div className="text-sm text-gray-300">{b.content}</div>
+                        {b.resolved_comment && <div className="text-xs text-gray-500 mt-1">→ {b.resolved_comment}</div>}
                       </div>
                     ))}
                   </div>
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-slate-400">Decision Log</span>
-                    <button onClick={() => setAddingDecision(!addingDecision)} className="text-xs text-blue-500">＋</button>
+                    <span className="text-xs font-medium text-gray-500">Decision Log</span>
+                    <button onClick={() => setAddingDecision(!addingDecision)} className="text-xs text-[#FFE600]">＋</button>
                   </div>
                   {addingDecision && (
                     <div className="flex gap-2 mb-2">
-                      <input value={newDecisionContent} onChange={e => setNewDecisionContent(e.target.value)} placeholder="判断内容" className="bg-slate-100 text-slate-900 text-xs px-2 py-1 rounded flex-1" />
-                      <button onClick={addDecision} className="bg-blue-600 text-white text-xs px-2 py-1 rounded">追加</button>
+                      <input value={newDecisionContent} onChange={e => setNewDecisionContent(e.target.value)} placeholder="判断内容" className="bg-[#333333] text-white text-xs px-2 py-1 rounded flex-1" />
+                      <button onClick={addDecision} className="bg-[#FFE600] text-black text-xs px-2 py-1 rounded">追加</button>
                     </div>
                   )}
                   <div className="flex flex-col gap-2">
                     {openDecisions.map((d: any) => (
                       <div key={d.id} className="bg-yellow-50 rounded-lg p-3 border border-yellow-100">
                         <div className="text-xs font-medium text-yellow-600 mb-1">open</div>
-                        <div className="text-sm text-slate-700 mb-2">{d.content}</div>
+                        <div className="text-sm text-gray-200 mb-2">{d.content}</div>
                         <div className="flex flex-col gap-1">
-                          <select onChange={e => updateDecision(d.id, { decided_by: e.target.value || null })} className="bg-white border border-slate-200 text-xs px-1 py-0.5 rounded text-slate-600">
+                          <select onChange={e => updateDecision(d.id, { decided_by: e.target.value || null })} className="bg-[#242424] border border-[#3a3a3a] text-xs px-1 py-0.5 rounded text-gray-300">
                             <option value="">判断者を選択</option>
                             {members.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                           </select>
@@ -382,9 +382,9 @@ export default function ThemeDetailPage() {
                       </div>
                     ))}
                     {resolvedDecisions.map((d: any) => (
-                      <div key={d.id} className="bg-slate-50 rounded-lg p-3 border border-slate-200 opacity-60">
-                        <div className="text-xs font-medium text-slate-400 mb-1">resolved</div>
-                        <div className="text-sm text-slate-600">{d.content}</div>
+                      <div key={d.id} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a] opacity-60">
+                        <div className="text-xs font-medium text-gray-500 mb-1">resolved</div>
+                        <div className="text-sm text-gray-300">{d.content}</div>
                       </div>
                     ))}
                   </div>
@@ -395,18 +395,18 @@ export default function ThemeDetailPage() {
           </div>
 
           <div className="flex flex-col gap-6">
-            <div className="bg-white rounded-xl p-5 border border-slate-200">
-              <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">SYNC STATUS</h2>
+            <div className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
+              <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">SYNC STATUS</h2>
               <div className="flex flex-col gap-4">
                 {syncAxes.map(axis => (
                   <div key={axis.key}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs text-slate-500">{axis.label}</span>
-                      <span className="text-xs font-medium text-slate-700">{theme.sync_statuses?.[axis.key] ?? 3}/5</span>
+                      <span className="text-xs text-gray-400">{axis.label}</span>
+                      <span className="text-xs font-medium text-gray-200">{theme.sync_statuses?.[axis.key] ?? 3}/5</span>
                     </div>
                     <div className="flex gap-1">
                       {[1, 2, 3, 4, 5].map(v => (
-                        <button key={v} onClick={() => updateSyncStatus(axis.key, v)} className={`flex-1 h-2 rounded-full transition-colors ${v <= (theme.sync_statuses?.[axis.key] ?? 3) ? 'bg-blue-500' : 'bg-slate-200'}`} />
+                        <button key={v} onClick={() => updateSyncStatus(axis.key, v)} className={`flex-1 h-2 rounded-full transition-colors ${v <= (theme.sync_statuses?.[axis.key] ?? 3) ? 'bg-[#FFE600]' : 'bg-[#3a3a3a]'}`} />
                       ))}
                     </div>
                   </div>

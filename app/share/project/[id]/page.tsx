@@ -24,18 +24,18 @@ export default function ShareProjectPage() {
     fetch()
   }, [id])
 
-  if (loading) return <div className="flex items-center justify-center h-screen text-slate-500">Loading...</div>
-  if (!project) return <div className="flex items-center justify-center h-screen text-slate-500">Projectが見つかりません</div>
+  if (loading) return <div className="flex items-center justify-center h-screen text-gray-400">Loading...</div>
+  if (!project) return <div className="flex items-center justify-center h-screen text-gray-400">Projectが見つかりません</div>
 
   const themes = project.themes || []
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
+    <div className="min-h-screen bg-[#1a1a1a] p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-xl p-6 border border-slate-200 mb-6">
-          <div className="text-xs text-slate-400 mb-1">プロジェクト · Project · 閲覧専用</div>
-          <h1 className="text-2xl font-bold text-slate-900">{project.name}</h1>
-          {project.category && <div className="text-sm text-slate-500 mt-1">{project.category.name}</div>}
+        <div className="bg-[#242424] rounded-xl p-6 border border-[#3a3a3a] mb-6">
+          <div className="text-xs text-gray-500 mb-1">プロジェクト · Project · 閲覧専用</div>
+          <h1 className="text-2xl font-bold text-white">{project.name}</h1>
+          {project.category && <div className="text-sm text-gray-400 mt-1">{project.category.name}</div>}
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
@@ -45,9 +45,9 @@ export default function ShareProjectPage() {
             { key: 'how', label: 'HOW' },
             { key: 'so_what', label: 'SO WHAT' },
           ].map(f => (
-            <div key={f.key} className="bg-white rounded-xl p-4 border border-slate-200">
-              <div className="text-xs font-bold text-blue-500 mb-2">{f.label}</div>
-              <div className="text-sm text-slate-700">{project[f.key] || <span className="text-slate-400 italic">未入力</span>}</div>
+            <div key={f.key} className="bg-[#242424] rounded-xl p-4 border border-[#3a3a3a]">
+              <div className="text-xs font-bold text-[#FFE600] mb-2">{f.label}</div>
+              <div className="text-sm text-gray-200">{project[f.key] || <span className="text-gray-500 italic">未入力</span>}</div>
             </div>
           ))}
         </div>
@@ -64,25 +64,25 @@ export default function ShareProjectPage() {
               new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
 
             return (
-              <div key={theme.id} className="bg-white rounded-xl p-5 border border-slate-200">
+              <div key={theme.id} className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a]">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <h2 className="text-lg font-bold text-slate-900">{theme.name}</h2>
-                    <span className={`inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${theme.status === 'done' ? 'bg-green-100 text-green-700' : theme.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-500'}`}>
+                    <h2 className="text-lg font-bold text-white">{theme.name}</h2>
+                    <span className={`inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${theme.status === 'done' ? 'bg-green-100 text-green-700' : theme.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 'bg-[#333333] text-gray-400'}`}>
                       {statusLabel(theme.status)}
                     </span>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-slate-900">{progress}%</div>
-                    <div className="text-xs text-slate-400">タスク消化率</div>
+                    <div className="text-2xl font-bold text-white">{progress}%</div>
+                    <div className="text-xs text-gray-500">タスク消化率</div>
                   </div>
                 </div>
 
                 {latestLog && (
-                  <div className="bg-slate-50 rounded-lg p-3 border border-slate-200 mb-3">
-                    <div className="text-xs text-slate-400 mb-1">最新進捗 · {new Date(latestLog.created_at).toLocaleDateString('ja-JP')}</div>
-                    <div className="text-sm font-medium text-slate-700">{statusLabel(latestLog.status)} · {latestLog.progress_rate}%</div>
-                    {latestLog.comment && <div className="text-sm text-slate-500 mt-1">{latestLog.comment}</div>}
+                  <div className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a] mb-3">
+                    <div className="text-xs text-gray-500 mb-1">最新進捗 · {new Date(latestLog.created_at).toLocaleDateString('ja-JP')}</div>
+                    <div className="text-sm font-medium text-gray-200">{statusLabel(latestLog.status)} · {latestLog.progress_rate}%</div>
+                    {latestLog.comment && <div className="text-sm text-gray-400 mt-1">{latestLog.comment}</div>}
                   </div>
                 )}
 
@@ -95,7 +95,7 @@ export default function ShareProjectPage() {
             )
           })}
         </div>
-        <div className="mt-6 text-center text-xs text-slate-400">このページは閲覧専用です。編集はできません。</div>
+        <div className="mt-6 text-center text-xs text-gray-500">このページは閲覧専用です。編集はできません。</div>
       </div>
     </div>
   )

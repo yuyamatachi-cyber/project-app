@@ -18,7 +18,7 @@ export default function SharePortfolioPage() {
     fetchData()
   }, [])
 
-  if (loading) return <div className="flex items-center justify-center h-screen text-slate-500">Loading...</div>
+  if (loading) return <div className="flex items-center justify-center h-screen text-gray-400">Loading...</div>
 
   const taskProgress = (p: any) => {
     const tasks = p.themes?.flatMap((t: any) => t.tasks || []) || []
@@ -32,11 +32,11 @@ export default function SharePortfolioPage() {
       (t.decision_logs?.filter((d: any) => d.status === 'open').length || 0), 0) || 0
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
+    <div className="min-h-screen bg-[#1a1a1a] p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-xl p-6 border border-slate-200 mb-6">
-          <div className="text-xs text-slate-400 mb-1">プロジェクト · Portfolio · 閲覧専用</div>
-          <h1 className="text-2xl font-bold text-slate-900">Project一覧</h1>
+        <div className="bg-[#242424] rounded-xl p-6 border border-[#3a3a3a] mb-6">
+          <div className="text-xs text-gray-500 mb-1">プロジェクト · Portfolio · 閲覧専用</div>
+          <h1 className="text-2xl font-bold text-white">Project一覧</h1>
         </div>
         <div className="grid grid-cols-4 gap-4 mb-6">
           {[
@@ -45,16 +45,16 @@ export default function SharePortfolioPage() {
             { label: '意思決定待ち', value: projects.filter(p => openIssues(p) > 0).length },
             { label: '平均進捗率', value: `${projects.length === 0 ? 0 : Math.round(projects.reduce((s, p) => s + taskProgress(p), 0) / projects.length)}%` },
           ].map(k => (
-            <div key={k.label} className="bg-white rounded-xl p-4 border border-slate-200">
-              <div className="text-xs text-slate-400 mb-1">{k.label}</div>
-              <div className="text-2xl font-bold text-slate-900">{k.value}</div>
+            <div key={k.label} className="bg-[#242424] rounded-xl p-4 border border-[#3a3a3a]">
+              <div className="text-xs text-gray-500 mb-1">{k.label}</div>
+              <div className="text-2xl font-bold text-white">{k.value}</div>
             </div>
           ))}
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-[#242424] rounded-xl border border-[#3a3a3a] overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-200 text-slate-400 text-xs uppercase tracking-wider">
+              <tr className="border-b border-[#3a3a3a] text-gray-500 text-xs uppercase tracking-wider">
                 <th className="text-left px-4 py-3">Project名</th>
                 <th className="text-left px-4 py-3">カテゴリー</th>
                 <th className="text-center px-4 py-3">Health</th>
@@ -65,14 +65,14 @@ export default function SharePortfolioPage() {
             </thead>
             <tbody>
               {projects.map(p => (
-                <tr key={p.id} className="border-b border-slate-200">
-                  <td className="px-4 py-3 font-medium text-slate-900">{p.name}</td>
-                  <td className="px-4 py-3 text-slate-500">{p.category?.name || '—'}</td>
+                <tr key={p.id} className="border-b border-[#3a3a3a]">
+                  <td className="px-4 py-3 font-medium text-white">{p.name}</td>
+                  <td className="px-4 py-3 text-gray-400">{p.category?.name || '—'}</td>
                   <td className="px-4 py-3 text-center text-lg">{p.health === 'red' ? '🔴' : p.health === 'yellow' ? '🟡' : '🟢'}</td>
-                  <td className="px-4 py-3 text-center text-slate-600">{taskProgress(p)}%</td>
+                  <td className="px-4 py-3 text-center text-gray-300">{taskProgress(p)}%</td>
                   <td className="px-4 py-3 text-center text-lg">{p.risk === 'red' ? '🔴' : p.risk === 'yellow' ? '🟡' : '🟢'}</td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${openIssues(p) > 0 ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-400'}`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${openIssues(p) > 0 ? 'bg-red-100 text-red-600' : 'bg-[#333333] text-gray-500'}`}>
                       {openIssues(p) > 0 ? `open ${openIssues(p)}件` : 'clear'}
                     </span>
                   </td>
@@ -81,7 +81,7 @@ export default function SharePortfolioPage() {
             </tbody>
           </table>
         </div>
-        <div className="mt-4 text-center text-xs text-slate-400">このページは閲覧専用です。</div>
+        <div className="mt-4 text-center text-xs text-gray-500">このページは閲覧専用です。</div>
       </div>
     </div>
   )

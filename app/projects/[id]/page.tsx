@@ -8,7 +8,7 @@ const statusLabel = (s: string) =>
   s === 'not_started' ? '未着手' : s === 'in_progress' ? '進行中' : '完了'
 
 const statusColor = (s: string) =>
-  s === 'done' ? 'bg-green-900 text-green-300' : s === 'in_progress' ? 'bg-blue-900 text-blue-300' : 'bg-slate-100 text-slate-500'
+  s === 'done' ? 'bg-green-900 text-green-300' : s === 'in_progress' ? 'bg-blue-900 text-blue-300' : 'bg-[#333333] text-gray-400'
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -130,8 +130,8 @@ export default function ProjectDetailPage() {
     return Math.round((tasks as any[]).filter(t => t.status === 'done').length / tasks.length * 100)
   }
 
-  if (loading) return <div className="flex items-center justify-center h-screen text-slate-500">Loading...</div>
-  if (!project) return <div className="flex items-center justify-center h-screen text-slate-500">Project not found</div>
+  if (loading) return <div className="flex items-center justify-center h-screen text-gray-400">Loading...</div>
+  if (!project) return <div className="flex items-center justify-center h-screen text-gray-400">Project not found</div>
 
   const contextFields = [
     { key: 'why', label: 'WHY', placeholder: 'なぜやるか' },
@@ -141,46 +141,46 @@ export default function ProjectDetailPage() {
   ]
 
   return (
-    <div className="flex h-screen bg-slate-50">
-      <aside className="w-56 bg-white border-r border-slate-200 flex flex-col p-4 gap-2">
-        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">プロジェクト</div>
-        <a href="/portfolio" className="text-slate-600 hover:bg-slate-100 px-3 py-2 rounded text-sm">← Portfolio</a>
+    <div className="flex h-screen bg-[#1a1a1a]">
+      <aside className="w-56 bg-[#242424] border-r border-[#3a3a3a] flex flex-col p-4 gap-2">
+        <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">プロジェクト</div>
+        <a href="/portfolio" className="text-gray-300 hover:bg-[#333333] px-3 py-2 rounded text-sm">← Portfolio</a>
       </aside>
       <main className="flex-1 overflow-auto p-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <div className="text-xs text-slate-500 mb-1">{project.category?.name || '—'}</div>
-            <h1 className="text-2xl font-bold text-slate-900">{project.name}</h1>
+            <div className="text-xs text-gray-400 mb-1">{project.category?.name || '—'}</div>
+            <h1 className="text-2xl font-bold text-white">{project.name}</h1>
           </div>
-          <button onClick={() => { navigator.clipboard.writeText(window.location.origin + '/share/project/' + id); alert('共有URLをコピーしました'); }} className="bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs px-4 py-2 rounded-lg border border-slate-200">🔗 共有
+          <button onClick={() => { navigator.clipboard.writeText(window.location.origin + '/share/project/' + id); alert('共有URLをコピーしました'); }} className="bg-[#333333] hover:bg-[#3a3a3a] text-gray-300 text-xs px-4 py-2 rounded-lg border border-[#3a3a3a]">🔗 共有
           </button>
         </div>
 
         {/* 文脈パネル */}
         <div className="grid grid-cols-2 gap-4 mb-8">
           {contextFields.map(f => (
-            <div key={f.key} className="bg-white rounded-xl p-4 border border-slate-200">
-              <div className="text-xs font-bold text-blue-400 mb-2">{f.label}</div>
+            <div key={f.key} className="bg-[#242424] rounded-xl p-4 border border-[#3a3a3a]">
+              <div className="text-xs font-bold text-[#FFE600] mb-2">{f.label}</div>
               {editingField === f.key ? (
                 <div className="flex flex-col gap-2">
                   <textarea
                     autoFocus
                     value={fieldValue}
                     onChange={e => setFieldValue(e.target.value)}
-                    className="bg-slate-100 text-slate-900 text-sm px-3 py-2 rounded resize-none w-full"
+                    className="bg-[#333333] text-white text-sm px-3 py-2 rounded resize-none w-full"
                     rows={3}
                   />
                   <div className="flex gap-2">
-                    <button onClick={() => saveField(f.key, fieldValue)} className="bg-blue-600 text-slate-900 text-xs px-3 py-1 rounded">保存</button>
-                    <button onClick={() => setEditingField(null)} className="text-slate-500 text-xs">キャンセル</button>
+                    <button onClick={() => saveField(f.key, fieldValue)} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded">保存</button>
+                    <button onClick={() => setEditingField(null)} className="text-gray-400 text-xs">キャンセル</button>
                   </div>
                 </div>
               ) : (
                 <div
                   onClick={() => { setEditingField(f.key); setFieldValue((project as any)[f.key] || '') }}
-                  className="text-slate-600 text-sm cursor-pointer hover:text-slate-900 min-h-[60px]"
+                  className="text-gray-300 text-sm cursor-pointer hover:text-white min-h-[60px]"
                 >
-                  {(project as any)[f.key] || <span className="text-slate-400 italic">{f.placeholder}（クリックして編集）</span>}
+                  {(project as any)[f.key] || <span className="text-gray-500 italic">{f.placeholder}（クリックして編集）</span>}
                 </div>
               )}
             </div>
@@ -188,8 +188,8 @@ export default function ProjectDetailPage() {
         </div>
 
         {/* SYNC STATUS */}
-        <div className="bg-white rounded-xl p-5 border border-slate-200 mb-8">
-          <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">SYNC STATUS</h2>
+        <div className="bg-[#242424] rounded-xl p-5 border border-[#3a3a3a] mb-8">
+          <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">SYNC STATUS</h2>
           <div className="grid grid-cols-5 gap-4">
             {[
               { key: 'purpose', label: '目的同期' },
@@ -211,13 +211,13 @@ export default function ProjectDetailPage() {
               }
               return (
                 <div key={axis.key} className="flex flex-col items-center gap-2">
-                  <span className="text-xs text-slate-500 font-medium">{axis.label}</span>
+                  <span className="text-xs text-gray-400 font-medium">{axis.label}</span>
                   <div className="flex flex-col gap-1 w-full">
                     {[5, 4, 3, 2, 1].map(v => (
                       <button
                         key={v}
                         onClick={() => updateProjectSyncStatus(axis.key, v)}
-                        className={`w-full py-1.5 rounded text-xs font-bold transition-all ${v === val ? colorMap[v] + ' shadow-md scale-105' : 'bg-slate-100 text-slate-300 hover:bg-slate-200'}`}
+                        className={`w-full py-1.5 rounded text-xs font-bold transition-all ${v === val ? colorMap[v] + ' shadow-md scale-105' : 'bg-[#333333] text-gray-400 hover:bg-[#3a3a3a]'}`}
                       >
                         {v}{labelMap[v] ? ` ${labelMap[v]}` : ''}
                       </button>
@@ -229,27 +229,27 @@ export default function ProjectDetailPage() {
                     placeholder="コメント（50文字）"
                     maxLength={50}
                     rows={2}
-                    className="w-full text-xs bg-slate-50 border border-slate-200 rounded px-2 py-1 resize-none text-slate-600 mt-1"
+                    className="w-full text-xs bg-[#1a1a1a] border border-[#3a3a3a] rounded px-2 py-1 resize-none text-gray-300 mt-1"
                   />
                 </div>
               )
             })}
           </div>
           <div className="flex justify-end mt-4">
-            <button onClick={saveSyncStatus} className={`text-xs px-4 py-2 rounded-lg font-medium transition-colors ${syncSaved ? 'bg-green-500 text-white' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>
+            <button onClick={saveSyncStatus} className={`text-xs px-4 py-2 rounded-lg font-medium transition-colors ${syncSaved ? 'bg-green-500 text-white' : 'bg-[#FFE600] text-black hover:bg-[#f0d800]'}`}>
               {syncSaved ? '✓ 保存しました' : '保存'}
             </button>
           </div>
         </div>
 
         {/* Theme一覧 */}
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-          <div className="px-4 py-3 border-b border-slate-200">
-            <h2 className="text-sm font-bold text-slate-600 uppercase tracking-wider">Themes</h2>
+        <div className="bg-[#242424] rounded-xl border border-[#3a3a3a] overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#3a3a3a]">
+            <h2 className="text-sm font-bold text-gray-300 uppercase tracking-wider">Themes</h2>
           </div>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider">
+              <tr className="border-b border-[#3a3a3a] text-gray-400 text-xs uppercase tracking-wider">
                 <th className="text-left px-4 py-3">Theme名</th>
                 <th className="text-center px-4 py-3">ステータス</th>
                 <th className="text-center px-4 py-3">進捗率</th>
@@ -259,31 +259,31 @@ export default function ProjectDetailPage() {
             </thead>
             <tbody>
               {themes.map(t => (
-                <tr key={t.id} className="border-b border-slate-200 hover:bg-slate-100 transition-colors">
+                <tr key={t.id} className="border-b border-[#3a3a3a] hover:bg-[#333333] transition-colors">
                   <td className="px-4 py-3">
-                    <a href={`/themes/${t.id}`} className="text-blue-400 hover:underline font-medium">{t.name}</a>
+                    <a href={`/themes/${t.id}`} className="text-[#FFE600] hover:underline font-medium">{t.name}</a>
                   </td>
                   <td className="px-4 py-3 text-center">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor(t.status)}`}>
                       {statusLabel(t.status)}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-center text-slate-600">{taskProgress(t)}%</td>
+                  <td className="px-4 py-3 text-center text-gray-300">{taskProgress(t)}%</td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${issueCount(t) > 0 ? 'bg-red-900 text-red-300' : 'bg-slate-100 text-slate-500'}`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${issueCount(t) > 0 ? 'bg-red-900 text-red-300' : 'bg-[#333333] text-gray-400'}`}>
                       {issueCount(t) > 0 ? `${issueCount(t)}件` : '—'}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center">
                     <div className="flex gap-2 justify-center">
-                      <button onClick={() => { const name = prompt('Theme名を変更', t.name); if (name) updateThemeName(t.id, name) }} className="text-xs text-blue-500 hover:text-blue-700">編集</button>
+                      <button onClick={() => { const name = prompt('Theme名を変更', t.name); if (name) updateThemeName(t.id, name) }} className="text-xs text-[#FFE600] hover:text-[#f0d800]">編集</button>
                       <button onClick={() => deleteTheme(t.id)} className="text-xs text-red-400 hover:text-red-600">削除</button>
                     </div>
                   </td>
                 </tr>
               ))}
               {addingTheme ? (
-                <tr className="border-b border-slate-200 bg-slate-100">
+                <tr className="border-b border-[#3a3a3a] bg-[#333333]">
                   <td className="px-4 py-3" colSpan={4}>
                     <div className="flex gap-2">
                       <input
@@ -292,17 +292,17 @@ export default function ProjectDetailPage() {
                         onChange={e => setNewThemeName(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && addTheme()}
                         placeholder="Theme名"
-                        className="bg-slate-200 text-slate-900 px-2 py-1 rounded text-sm flex-1"
+                        className="bg-[#3a3a3a] text-white px-2 py-1 rounded text-sm flex-1"
                       />
-                      <button onClick={addTheme} className="bg-blue-600 text-slate-900 px-3 py-1 rounded text-xs">追加</button>
-                      <button onClick={() => setAddingTheme(false)} className="text-slate-500 text-xs">キャンセル</button>
+                      <button onClick={addTheme} className="bg-[#FFE600] text-black px-3 py-1 rounded text-xs">追加</button>
+                      <button onClick={() => setAddingTheme(false)} className="text-gray-400 text-xs">キャンセル</button>
                     </div>
                   </td>
                 </tr>
               ) : (
                 <tr>
                   <td colSpan={4} className="px-4 py-3">
-                    <button onClick={() => setAddingTheme(true)} className="text-blue-400 text-sm hover:text-blue-300">＋ Theme追加</button>
+                    <button onClick={() => setAddingTheme(true)} className="text-[#FFE600] text-sm hover:text-[#f0d800]">＋ Theme追加</button>
                   </td>
                 </tr>
               )}
