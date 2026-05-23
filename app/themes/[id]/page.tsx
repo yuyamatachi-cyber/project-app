@@ -20,6 +20,7 @@ export default function ThemeDetailPage() {
   const [addingTask, setAddingTask] = useState(false)
   const [addingBlocker, setAddingBlocker] = useState(false)
   const [addingDecision, setAddingDecision] = useState(false)
+  const [blockerInputs, setBlockerInputs] = useState<Record<string, { resolved_by: string, resolved_comment: string }>>({})
   const [progressForm, setProgressForm] = useState({ status: 'in_progress', progress_rate: 0, comment: '' })
   const [showProgressForm, setShowProgressForm] = useState(false)
   const [newMemberName, setNewMemberName] = useState('')
