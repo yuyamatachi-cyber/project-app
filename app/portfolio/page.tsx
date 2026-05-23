@@ -23,10 +23,16 @@ export default function PortfolioPage() {
     setLoading(true)
     const [{ data: cats }, { data: projs }] = await Promise.all([
       supabase.from('categories').select('*').order('created_at'),
-      supabase.from('projects').select('*, category:categories(*), themes(*, tasks(*), blockers(*), decision_logs(*)), sync_statuses(*)').order('created_at'),
+      supabase.from('projects').select('*, category:categories(*), themes(*, tasks(*), blockers(*), decision_logs(*))').order('created_at'),
     ])
     setCategories(cats || [])
     setProjects(projs || [])
+    if (projs && projs.length > 0) {
+      const { data: syncs } = await supabase.from('sync_statuses').select('*').in('project_id', projs.map((p: any) => p.id))
+      const syncMap: Record<string, any> = {}
+      for (const s of syncs || []) { if (s.project_id) syncMap[s.project_id] = s }
+      setSyncStatuses(syncMap)
+    }
     setLoading(false)
   }
 
@@ -104,8 +110,10 @@ export default function PortfolioPage() {
   const statusColor = (s: string) =>
     s === 'done' ? 'bg-green-500 text-white' : s === 'in_progress' ? 'bg-blue-500 text-white' : 'bg-[#333333] text-gray-400'
 
+  const [syncStatuses, setSyncStatuses] = useState<Record<string, any>>({})
+
   const syncAvg = (p: any): number | null => {
-    const s = p.sync_statuses?.[0]
+    const s = syncStatuses[p.id]
     if (!s) return null
     return Math.round(((s.purpose || 3) + (s.granularity || 3) + (s.state || 3) + (s.priority || 3) + (s.interpretation || 3)) / 5 * 10) / 10
   }
