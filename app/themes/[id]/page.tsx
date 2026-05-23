@@ -412,10 +412,28 @@ export default function ThemeDetailPage() {
                       </div>
                     ))}
                     {resolvedBlockers.map((b: any) => (
-                      <div key={b.id} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a] opacity-60">
-                        <div className="text-xs font-medium text-gray-500 mb-1">resolved</div>
-                        <div className="text-sm text-gray-300">{b.content}</div>
-                        {b.resolved_comment && <div className="text-xs text-gray-500 mt-1">→ {b.resolved_comment}</div>}
+                      <div key={b.id} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a]">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-medium text-green-400">resolved</span>
+                          <div className="flex gap-2">
+                            <button onClick={() => { setEditingBlocker(b.id); setEditingBlockerContent(b.content) }} className="text-xs text-[#FFE600] hover:text-[#f0d800]">編集</button>
+                            <button onClick={() => deleteBlocker(b.id)} className="text-xs text-red-400 hover:text-red-300">削除</button>
+                          </div>
+                        </div>
+                        {editingBlocker === b.id ? (
+                          <div className="flex flex-col gap-1">
+                            <textarea value={editingBlockerContent} onChange={e => setEditingBlockerContent(e.target.value)} className="bg-white text-slate-900 text-xs px-2 py-1 rounded resize-none" rows={2} />
+                            <div className="flex gap-2">
+                              <button onClick={() => saveBlockerContent(b.id)} className="text-xs bg-[#FFE600] text-black px-2 py-0.5 rounded font-medium">保存</button>
+                              <button onClick={() => setEditingBlocker(null)} className="text-xs text-gray-400">キャンセル</button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div>
+                            <div className="text-sm text-gray-300">{b.content}</div>
+                            {b.resolved_comment && <div className="text-xs text-gray-500 mt-1">→ {b.resolved_comment}</div>}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -447,9 +465,25 @@ export default function ThemeDetailPage() {
                       </div>
                     ))}
                     {resolvedDecisions.map((d: any) => (
-                      <div key={d.id} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a] opacity-60">
-                        <div className="text-xs font-medium text-gray-500 mb-1">resolved</div>
-                        <div className="text-sm text-gray-300">{d.content}</div>
+                      <div key={d.id} className="bg-[#1a1a1a] rounded-lg p-3 border border-[#3a3a3a]">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-medium text-green-400">resolved</span>
+                          <div className="flex gap-2">
+                            <button onClick={() => { setEditingDecision(d.id); setEditingDecisionContent(d.content) }} className="text-xs text-[#FFE600] hover:text-[#f0d800]">編集</button>
+                            <button onClick={() => deleteDecision(d.id)} className="text-xs text-red-400 hover:text-red-300">削除</button>
+                          </div>
+                        </div>
+                        {editingDecision === d.id ? (
+                          <div className="flex flex-col gap-1">
+                            <textarea value={editingDecisionContent} onChange={e => setEditingDecisionContent(e.target.value)} className="bg-white text-slate-900 text-xs px-2 py-1 rounded resize-none" rows={2} />
+                            <div className="flex gap-2">
+                              <button onClick={() => saveDecisionContent(d.id)} className="text-xs bg-[#FFE600] text-black px-2 py-0.5 rounded font-medium">保存</button>
+                              <button onClick={() => setEditingDecision(null)} className="text-xs text-gray-400">キャンセル</button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-sm text-gray-300">{d.content}</div>
+                        )}
                       </div>
                     ))}
                   </div>
