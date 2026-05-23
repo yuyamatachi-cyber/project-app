@@ -64,7 +64,7 @@ export default function ProjectDetailPage() {
   async function createSnapshot() {
     const { data: fullProject } = await supabase
       .from('projects')
-      .select('*, category:categories(*), themes(*, tasks(*), blockers(*), decision_logs(*), progress_logs(*), milestones(*), sync_statuses(*), theme_members(*, member:members(*)))')
+      .select('*, category:categories(*), themes(*, tasks(*), blockers(*), decision_logs(*), progress_logs(*), milestones(*), theme_members(*, member:members(*)))')
       .eq('id', id)
       .single()
     const { data: snap } = await supabase
