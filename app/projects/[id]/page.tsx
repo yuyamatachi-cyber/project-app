@@ -161,7 +161,7 @@ export default function ProjectDetailPage() {
         {/* SYNC STATUS */}
         <div className="bg-white rounded-xl p-5 border border-slate-200 mb-8">
           <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">SYNC STATUS</h2>
-          <div className="grid grid-cols-5 gap-4">
+          <div className="flex flex-col gap-4">
             {[
               { key: 'purpose', label: '目的同期' },
               { key: 'granularity', label: '粒度同期' },
@@ -171,16 +171,18 @@ export default function ProjectDetailPage() {
             ].map(axis => {
               const val = syncStatus?.[axis.key] ?? 3
               return (
-                <div key={axis.key}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs text-slate-500">{axis.label}</span>
-                    <span className="text-xs font-medium text-slate-700">{val}/5</span>
-                  </div>
-                  <div className="flex gap-1">
-                    {[1, 2, 3, 4, 5].map(v => (
-                      <button key={v} onClick={() => updateProjectSyncStatus(axis.key, v)} className={`flex-1 h-2 rounded-full transition-colors ${v <= val ? 'bg-blue-500' : 'bg-slate-200'}`} />
-                    ))}
-                  </div>
+                <div key={axis.key} className="flex items-center gap-4">
+                  <span className="text-xs text-slate-500 w-20">{axis.label}</span>
+                  <input
+                    type="range"
+                    min={1}
+                    max={5}
+                    step={1}
+                    value={val}
+                    onChange={e => updateProjectSyncStatus(axis.key, Number(e.target.value))}
+                    className="flex-1 accent-blue-500"
+                  />
+                  <span className="text-xs font-medium text-slate-700 w-8 text-right">{val}/5</span>
                 </div>
               )
             })}
