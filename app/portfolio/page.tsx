@@ -23,7 +23,7 @@ export default function PortfolioPage() {
     setLoading(true)
     const [{ data: cats }, { data: projs }] = await Promise.all([
       supabase.from('categories').select('*').order('created_at'),
-      supabase.from('projects').select('*, category:categories(*), themes(*, tasks(*), blockers(*), decision_logs(*))').order('created_at'),
+      supabase.from('projects').select('*, category:categories(*), themes(*, tasks(*), blockers(*), decision_logs(*), theme_members(*))').order('created_at'),
     ])
     setCategories(cats || [])
     setProjects(projs || [])
@@ -120,10 +120,15 @@ export default function PortfolioPage() {
     return Math.round(((s.purpose || 3) + (s.granularity || 3) + (s.state || 3) + (s.priority || 3) + (s.interpretation || 3)) / 5 * 10) / 10
   }
 
-  const openIssues = (p: Project) =>
-    p.themes?.reduce((sum: number, t: any) =>
-      sum + (t.blockers?.filter((b: any) => b.status === 'open').length || 0) +
-      (t.decision_logs?.filter((d: any) => d.status === 'open').length || 0), 0) || 0
+  const openIssues = (p: any) => {
+    return p.themes?.reduce((sum: number, t: any) => {
+      const ownerMemberId = t.theme_members?.find((tm: any) => tm.role === 'owner')?.member_id
+      const blockerIssues = (t.blockers || []).filter((b: any) =>
+        b.status === 'open' && (!b.resolved_by || b.resolved_by === ownerMemberId)
+      ).length
+      return sum + blockerIssues
+    }, 0) || 0
+  }
 
   const taskProgress = (p: Project) => {
     const tasks = p.themes?.flatMap((t: any) => t.tasks || []) || []
@@ -171,7 +176,7 @@ export default function PortfolioPage() {
               label: '要注意',
               emoji: '🔴',
               pj: projects.filter(p => p.health === 'red').length,
-              issues: projects.filter(p => p.health === 'red').reduce((sum, p) => sum + (openIssues(p) as number), 0),
+              issues: projects.filter((p: any) => p.health === 'red').reduce((sum, p) => sum + (openIssues(p) as number), 0),
               sync: (() => { const ps = projects.filter(p => p.health === 'red'); return ps.length === 0 ? null : Math.round(ps.reduce((s, p) => s + (syncAvg(p) ?? 3), 0) / ps.length * 10) / 10 })(),
               border: 'border-red-200', bg: 'bg-red-50', labelColor: 'text-red-600'
             },
@@ -179,7 +184,7 @@ export default function PortfolioPage() {
               label: '注意',
               emoji: '🟡',
               pj: projects.filter(p => p.health === 'yellow').length,
-              issues: projects.filter(p => p.health === 'yellow').reduce((sum, p) => sum + (openIssues(p) as number), 0),
+              issues: projects.filter((p: any) => p.health === 'yellow').reduce((sum, p) => sum + (openIssues(p) as number), 0),
               sync: (() => { const ps = projects.filter(p => p.health === 'yellow'); return ps.length === 0 ? null : Math.round(ps.reduce((s, p) => s + (syncAvg(p) ?? 3), 0) / ps.length * 10) / 10 })(),
               border: 'border-yellow-200', bg: 'bg-yellow-50', labelColor: 'text-yellow-600'
             },
@@ -187,7 +192,7 @@ export default function PortfolioPage() {
               label: '良好',
               emoji: '🟢',
               pj: projects.filter(p => p.health === 'green').length,
-              issues: projects.filter(p => p.health === 'green').reduce((sum, p) => sum + (openIssues(p) as number), 0),
+              issues: projects.filter((p: any) => p.health === 'green').reduce((sum, p) => sum + (openIssues(p) as number), 0),
               sync: (() => { const ps = projects.filter(p => p.health === 'green'); return ps.length === 0 ? null : Math.round(ps.reduce((s, p) => s + (syncAvg(p) ?? 3), 0) / ps.length * 10) / 10 })(),
               border: 'border-green-200', bg: 'bg-green-50', labelColor: 'text-green-600'
             },
@@ -211,7 +216,7 @@ export default function PortfolioPage() {
                 <th className="text-center px-4 py-3">Health</th>
                 <th className="text-center px-4 py-3">ステータス</th>
                 <th className="text-center px-4 py-3">SYNC</th>
-                <th className="text-center px-4 py-3">Decision</th>
+                <th className="text-center px-4 py-3">Issues</th>
                 <th className="text-center px-4 py-3">操作</th>
               </tr>
             </thead>
@@ -239,7 +244,7 @@ export default function PortfolioPage() {
                   </td>
                   <td className="px-4 py-3 text-center">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${openIssues(p) > 0 ? 'bg-red-900 text-red-300' : 'bg-[#333333] text-slate-500'}`}>
-                      {openIssues(p) > 0 ? `Blockers ${openIssues(p)}件` : '—'}
+                      {openIssues(p) > 0 ? `Issues ${openIssues(p)}件` : '—'}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center">

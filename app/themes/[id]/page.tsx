@@ -20,7 +20,7 @@ export default function ThemeDetailPage() {
   const [addingTask, setAddingTask] = useState(false)
   const [addingBlocker, setAddingBlocker] = useState(false)
   const [addingDecision, setAddingDecision] = useState(false)
-  const [blockerInputs, setBlockerInputs] = useState<Record<string, { measure: string }>>({})
+  const [blockerInputs, setBlockerInputs] = useState<Record<string, any>>({})
   const [editingBlocker, setEditingBlocker] = useState<string | null>(null)
   const [editingBlockerContent, setEditingBlockerContent] = useState('')
   const [editingDecision, setEditingDecision] = useState<string | null>(null)
@@ -156,21 +156,22 @@ export default function ThemeDetailPage() {
     fetchAll()
   }
 
-  async function resolveBlocker(blockerId: string, measure?: string) {
+  async function resolveBlocker(blockerId: string, measure?: string, resolvedBy?: string) {
     const blocker = (theme?.blockers || []).find((b: any) => b.id === blockerId)
     // Decision Logに移動（insert）
     await supabase.from('decision_logs').insert({
       theme_id: id,
       blocker_id: blockerId,
       content: blocker?.content || '',
-      decided_by: null,
+      decided_by: resolvedBy || null,
       status: 'resolved'
     })
-    // resolved_commentに施策内容を保存してBlockerを削除
+    // resolved_commentに施策内容・resolved_byに判断者を保存
     await supabase.from('blockers').update({
       status: 'resolved',
       resolved_at: new Date().toISOString(),
-      resolved_comment: measure || ''
+      resolved_comment: measure || '',
+      resolved_by: resolvedBy || null
     }).eq('id', blockerId)
     setBlockerInputs(prev => { const n = {...prev}; delete n[blockerId]; return n })
     fetchAll()
