@@ -167,7 +167,7 @@ export default function ProjectDetailPage() {
                     autoFocus
                     value={fieldValue}
                     onChange={e => setFieldValue(e.target.value)}
-                    className="bg-[#333333] text-white text-sm px-3 py-2 rounded resize-none w-full"
+                    className="bg-white text-slate-900 text-sm px-3 py-2 rounded resize-none w-full"
                     rows={3}
                   />
                   <div className="flex gap-2">

@@ -121,12 +121,12 @@ export default function PortfolioPage() {
           <div className="mt-2 flex flex-col gap-2">
             {categories.map(cat => (
               <div key={cat.id} className="flex gap-1">
-                <input defaultValue={cat.name} onBlur={e => renameCategory(cat.id, e.target.value)} className="flex-1 bg-[#333333] text-white text-xs px-2 py-1 rounded" />
+                <input defaultValue={cat.name} onBlur={e => renameCategory(cat.id, e.target.value)} className="flex-1 bg-white text-slate-900 text-xs px-2 py-1 rounded" />
                 <button onClick={() => deleteCategory(cat.id)} className="text-red-400 text-xs px-1">✕</button>
               </div>
             ))}
             <div className="flex gap-1">
-              <input value={newCategoryName} onChange={e => setNewCategoryName(e.target.value)} placeholder="新規カテゴリー" className="flex-1 bg-[#333333] text-white text-xs px-2 py-1 rounded" />
+              <input value={newCategoryName} onChange={e => setNewCategoryName(e.target.value)} placeholder="新規カテゴリー" className="flex-1 bg-white text-slate-900 text-xs px-2 py-1 rounded" />
               <button onClick={addCategory} className="text-[#FFE600] text-xs px-2">＋</button>
             </div>
           </div>
@@ -188,8 +188,8 @@ export default function PortfolioPage() {
                   <td className="px-4 py-3 text-center">
                     {editingProject === p.id ? (
                       <div className="flex gap-1 justify-center flex-wrap">
-                        <input value={editProjectName} onChange={e => setEditProjectName(e.target.value)} className="bg-[#333333] text-white text-xs px-2 py-1 rounded w-24" />
-                        <select value={editProjectCategory} onChange={e => setEditProjectCategory(e.target.value)} className="bg-[#333333] text-white text-xs px-1 py-1 rounded">
+                        <input value={editProjectName} onChange={e => setEditProjectName(e.target.value)} className="bg-white text-slate-900 text-xs px-2 py-1 rounded w-24" />
+                        <select value={editProjectCategory} onChange={e => setEditProjectCategory(e.target.value)} className="bg-white text-slate-900 text-xs px-1 py-1 rounded">
                           <option value="">未選択</option>
                           {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>

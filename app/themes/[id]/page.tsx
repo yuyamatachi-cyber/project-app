@@ -208,8 +208,8 @@ export default function ThemeDetailPage() {
               {addingMember && (
                 <div className="flex flex-col gap-2 mb-3">
                   <div className="flex gap-2">
-                    <input value={newMemberName} onChange={e => setNewMemberName(e.target.value)} placeholder="名前" className="bg-[#333333] text-white text-xs px-2 py-1 rounded flex-1" />
-                    <input value={newMemberInitial} onChange={e => setNewMemberInitial(e.target.value)} placeholder="略称" className="bg-[#333333] text-white text-xs px-2 py-1 rounded w-16" />
+                    <input value={newMemberName} onChange={e => setNewMemberName(e.target.value)} placeholder="名前" className="bg-white text-slate-900 text-xs px-2 py-1 rounded flex-1" />
+                    <input value={newMemberInitial} onChange={e => setNewMemberInitial(e.target.value)} placeholder="略称" className="bg-white text-slate-900 text-xs px-2 py-1 rounded w-16" />
                     <button onClick={addMember} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded">追加</button>
                   </div>
                   <div className="border-t border-[#3a3a3a] pt-2">
@@ -230,7 +230,7 @@ export default function ThemeDetailPage() {
                   return (
                     <div key={role} className="flex items-center gap-2">
                       <span className="text-xs text-gray-500 w-20">{roleLabel(role)}</span>
-                      <select value={assigned?.member_id || ''} onChange={e => assignMember(role, e.target.value)} className="flex-1 bg-[#333333] text-white text-xs px-2 py-1 rounded">
+                      <select value={assigned?.member_id || ''} onChange={e => assignMember(role, e.target.value)} className="flex-1 bg-white text-slate-900 text-xs px-2 py-1 rounded">
                         <option value="">未割当</option>
                         {members.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                       </select>
@@ -244,7 +244,7 @@ export default function ThemeDetailPage() {
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-gray-500">期日</span>
-                  <input type="date" value={theme.milestones?.due_date || ''} onChange={e => updateMilestone({ due_date: e.target.value })} className="bg-[#333333] text-white text-sm px-2 py-1 rounded" />
+                  <input type="date" value={theme.milestones?.due_date || ''} onChange={e => updateMilestone({ due_date: e.target.value })} className="bg-white text-slate-900 text-sm px-2 py-1 rounded" />
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-gray-500">完了</span>
@@ -317,7 +317,7 @@ export default function ThemeDetailPage() {
                           <div className="text-sm text-gray-200 mb-2">{t.name}</div>
                           <div className="flex gap-1 flex-wrap">
                             {['backlog', 'in_progress', 'done'].filter(s => s !== t.status).map(s => (
-                              <button key={s} onClick={() => updateTaskStatus(t.id, s)} className="text-xs text-[#FFE600] hover:text-[#f0d800] border border-[#FFE600] rounded px-1.5 py-0.5">
+                              <button key={s} onClick={() => updateTaskStatus(t.id, s)} className={`text-xs rounded px-1.5 py-0.5 border font-medium ${s === 'in_progress' ? 'bg-blue-500 text-white border-blue-500' : s === 'done' ? 'bg-green-500 text-white border-green-500' : 'bg-[#333333] text-gray-300 border-[#3a3a3a]'}`}>
                                 → {s === 'backlog' ? 'Backlog' : s === 'in_progress' ? 'In Progress' : 'Done'}
                               </button>
                             ))}
@@ -333,7 +333,7 @@ export default function ThemeDetailPage() {
               <div className="mt-3">
                 {addingTask ? (
                   <div className="flex gap-2">
-                    <input autoFocus value={newTaskName} onChange={e => setNewTaskName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addTask()} placeholder="タスク名" className="bg-[#333333] text-white text-sm px-2 py-1 rounded flex-1" />
+                    <input autoFocus value={newTaskName} onChange={e => setNewTaskName(e.target.value)} onKeyDown={e => e.key === 'Enter' && addTask()} placeholder="タスク名" className="bg-white text-slate-900 text-sm px-2 py-1 rounded flex-1" />
                     <button onClick={addTask} className="bg-[#FFE600] text-black text-xs px-3 py-1 rounded">追加</button>
                     <button onClick={() => setAddingTask(false)} className="text-gray-500 text-xs">キャンセル</button>
                   </div>
@@ -352,7 +352,7 @@ export default function ThemeDetailPage() {
                   </div>
                   {addingBlocker && (
                     <div className="flex gap-2 mb-2">
-                      <input value={newBlockerContent} onChange={e => setNewBlockerContent(e.target.value)} placeholder="ブロッカー内容" className="bg-[#333333] text-white text-xs px-2 py-1 rounded flex-1" />
+                      <input value={newBlockerContent} onChange={e => setNewBlockerContent(e.target.value)} placeholder="ブロッカー内容" className="bg-white text-slate-900 text-xs px-2 py-1 rounded flex-1" />
                       <button onClick={addBlocker} className="bg-[#FFE600] text-black text-xs px-2 py-1 rounded">追加</button>
                     </div>
                   )}
@@ -388,7 +388,7 @@ export default function ThemeDetailPage() {
                   </div>
                   {addingDecision && (
                     <div className="flex gap-2 mb-2">
-                      <input value={newDecisionContent} onChange={e => setNewDecisionContent(e.target.value)} placeholder="判断内容" className="bg-[#333333] text-white text-xs px-2 py-1 rounded flex-1" />
+                      <input value={newDecisionContent} onChange={e => setNewDecisionContent(e.target.value)} placeholder="判断内容" className="bg-white text-slate-900 text-xs px-2 py-1 rounded flex-1" />
                       <button onClick={addDecision} className="bg-[#FFE600] text-black text-xs px-2 py-1 rounded">追加</button>
                     </div>
                   )}
