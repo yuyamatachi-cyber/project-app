@@ -17,6 +17,8 @@ export default function ProjectDetailPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const [syncStatus, setSyncStatus] = useState<any>(null)
+  const [syncComments, setSyncComments] = useState<Record<string, string>>({})
+  const [syncSaved, setSyncSaved] = useState(false)
   const [editingField, setEditingField] = useState<string | null>(null)
   const [fieldValue, setFieldValue] = useState('')
   const [newThemeName, setNewThemeName] = useState('')
@@ -36,6 +38,15 @@ export default function ProjectDetailPage() {
     setCategories(cats || [])
     const { data: syncData } = await supabase.from('sync_statuses').select('*').eq('project_id', id).limit(1).then(r => ({ data: r.data?.[0] || null }))
     setSyncStatus(syncData)
+    if (syncData) {
+      setSyncComments({
+        purpose: syncData.purpose_comment || '',
+        granularity: syncData.granularity_comment || '',
+        state: syncData.state_comment || '',
+        priority: syncData.priority_comment || '',
+        interpretation: syncData.interpretation_comment || '',
+      })
+    }
     setLoading(false)
   }
 
@@ -80,6 +91,25 @@ export default function ProjectDetailPage() {
       await navigator.clipboard.writeText(url)
       alert(`スナップショットURLをコピーしました:\n${url}`)
     }
+  }
+
+  async function saveSyncStatus() {
+    const commentData = {
+      purpose_comment: syncComments['purpose'] || '',
+      granularity_comment: syncComments['granularity'] || '',
+      state_comment: syncComments['state'] || '',
+      priority_comment: syncComments['priority'] || '',
+      interpretation_comment: syncComments['interpretation'] || '',
+    }
+    if (syncStatus?.id) {
+      await supabase.from('sync_statuses').update(commentData).eq('id', syncStatus.id)
+    } else {
+      await supabase.from('sync_statuses').insert({ project_id: id, purpose: 3, granularity: 3, state: 3, priority: 3, interpretation: 3, ...commentData })
+    }
+    setSyncSaved(true)
+    setTimeout(() => setSyncSaved(false), 2000)
+    const { data: syncData } = await supabase.from('sync_statuses').select('*').eq('project_id', id).limit(1).then(r => ({ data: r.data?.[0] || null }))
+    setSyncStatus(syncData)
   }
 
   async function updateProjectSyncStatus(field: string, value: number) {
@@ -195,9 +225,22 @@ export default function ProjectDetailPage() {
                       </button>
                     ))}
                   </div>
+                  <textarea
+                    value={syncComments[axis.key] || ''}
+                    onChange={e => setSyncComments(prev => ({ ...prev, [axis.key]: e.target.value }))}
+                    placeholder="コメント（50文字）"
+                    maxLength={50}
+                    rows={2}
+                    className="w-full text-xs bg-slate-50 border border-slate-200 rounded px-2 py-1 resize-none text-slate-600 mt-1"
+                  />
                 </div>
               )
             })}
+          </div>
+          <div className="flex justify-end mt-4">
+            <button onClick={saveSyncStatus} className={`text-xs px-4 py-2 rounded-lg font-medium transition-colors ${syncSaved ? 'bg-green-500 text-white' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>
+              {syncSaved ? '✓ 保存しました' : '保存'}
+            </button>
           </div>
         </div>
 

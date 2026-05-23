@@ -137,7 +137,7 @@ export default function PortfolioPage() {
         <div className="grid grid-cols-4 gap-4 mb-8">
           {[
             { label: '進行中PJ', value: inProgress },
-            { label: '要注意', value: atRisk },
+            { label: '要注意：Health 赤●', value: atRisk },
             { label: '意思決定待ち', value: pendingDecision },
             { label: '平均進捗率', value: `${avgProgress}%` },
           ].map(k => (
