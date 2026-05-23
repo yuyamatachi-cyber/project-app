@@ -16,6 +16,7 @@ export default function ProjectDetailPage() {
   const [themes, setThemes] = useState<Theme[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
+  const [syncStatus, setSyncStatus] = useState<any>(null)
   const [editingField, setEditingField] = useState<string | null>(null)
   const [fieldValue, setFieldValue] = useState('')
   const [newThemeName, setNewThemeName] = useState('')
@@ -26,13 +27,15 @@ export default function ProjectDetailPage() {
   async function fetchAll() {
     setLoading(true)
     const [{ data: proj }, { data: thms }, { data: cats }] = await Promise.all([
-      supabase.from('projects').select('*, category:categories(*), sync_statuses(*)').eq('id', id).single(),
+      supabase.from('projects').select('*, category:categories(*)').eq('id', id).single(),
       supabase.from('themes').select('*, tasks(*), blockers(*), decision_logs(*)').eq('project_id', id).order('created_at'),
       supabase.from('categories').select('*').order('created_at'),
     ])
     setProject(proj)
     setThemes(thms || [])
     setCategories(cats || [])
+    const { data: syncData } = await supabase.from('sync_statuses').select('*').eq('project_id', id).maybeSingle()
+    setSyncStatus(syncData)
     setLoading(false)
   }
 
@@ -80,9 +83,8 @@ export default function ProjectDetailPage() {
   }
 
   async function updateProjectSyncStatus(field: string, value: number) {
-    const existing = (project as any)?.sync_statuses?.[0]
-    if (existing) {
-      await supabase.from('sync_statuses').update({ [field]: value }).eq('id', existing.id)
+    if (syncStatus) {
+      await supabase.from('sync_statuses').update({ [field]: value }).eq('id', syncStatus.id)
     } else {
       await supabase.from('sync_statuses').insert({ project_id: id, [field]: value })
     }
@@ -167,8 +169,7 @@ export default function ProjectDetailPage() {
               { key: 'priority_sync', label: '優先度同期' },
               { key: 'interpretation_sync', label: '解釈同期' },
             ].map(axis => {
-              const sync = (project as any)?.sync_statuses?.[0]
-              const val = sync?.[axis.key] ?? 3
+              const val = syncStatus?.[axis.key] ?? 3
               return (
                 <div key={axis.key}>
                   <div className="flex items-center justify-between mb-1">

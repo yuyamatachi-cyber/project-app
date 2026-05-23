@@ -33,7 +33,7 @@ export default function ShareProjectPage() {
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-xl p-6 border border-slate-200 mb-6">
-          <div className="text-xs text-slate-400 mb-1">LinkBPO · Project · 閲覧専用</div>
+          <div className="text-xs text-slate-400 mb-1">プロジェクト · Project · 閲覧専用</div>
           <h1 className="text-2xl font-bold text-slate-900">{project.name}</h1>
           {project.category && <div className="text-sm text-slate-500 mt-1">{project.category.name}</div>}
         </div>

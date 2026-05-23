@@ -35,7 +35,7 @@ export default function SharePortfolioPage() {
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-xl p-6 border border-slate-200 mb-6">
-          <div className="text-xs text-slate-400 mb-1">LinkBPO · Portfolio · 閲覧専用</div>
+          <div className="text-xs text-slate-400 mb-1">プロジェクト · Portfolio · 閲覧専用</div>
           <h1 className="text-2xl font-bold text-slate-900">Project一覧</h1>
         </div>
         <div className="grid grid-cols-4 gap-4 mb-6">
